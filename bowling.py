@@ -2,9 +2,8 @@ class Frame:
     """
     Knowledge of when a frame is done and what rolls are in the frame
     """
-    def __init__(self, prev_frame=None):
+    def __init__(self):
         self.rolls = []
-        self.prev_frame = None
         self.next_frame = None
 
     def is_complete(self):
@@ -68,8 +67,10 @@ class FinalFrame(Frame):
     def _bonus_score(self):
         if len(self.rolls) < 3:
             return 0
+        # strike in first roll
         elif self.rolls[0] == 10:
             return self.rolls[1] + self.rolls[2]
+        # strike in second rolls or spare in first two rolls
         elif self.rolls[1] == 10 or (self.rolls[0] + self.rolls[1] == 10):
             return self.rolls[2]
 
@@ -86,9 +87,9 @@ class BowlingGame:
         if self.current_frame.is_complete() and len(self.frames) < 10:
             is_final_frame = len(self.frames) == 9
             if is_final_frame:
-                new_frame = FinalFrame(prev_frame=self.current_frame)
+                new_frame = FinalFrame()
             else:
-                new_frame = NormalFrame(prev_frame=self.current_frame)
+                new_frame = NormalFrame()
             self.current_frame.next_frame = new_frame
             self.current_frame = new_frame
             self.frames.append(new_frame)
