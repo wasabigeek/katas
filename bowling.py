@@ -8,12 +8,7 @@ class Frame:
         self.next_frame = None
 
     def is_complete(self):
-        if len(self.rolls) >= 2:
-            return True
-        if self._is_strike():
-            return True
-
-        return False
+        raise NotImplementedError
 
     def add_roll(self, pin_count):
         self.rolls.append(pin_count)
@@ -23,6 +18,21 @@ class Frame:
         for roll in self.rolls:
             score += roll
         return score
+
+    def bonus_score(self):
+        raise NotImplementedError
+
+    def __str__(self):
+        return "<Frame rolls={rolls}>".format(rolls=self.rolls)
+
+class NormalFrame(Frame):
+    def is_complete(self):
+        if len(self.rolls) >= 2:
+            return True
+        if self._is_strike():
+            return True
+
+        return False
 
     def bonus_score(self):
         if self.next_frame is None:
@@ -37,10 +47,6 @@ class Frame:
 
         return 0
 
-    def __str__(self):
-        return "<Frame rolls={rolls}>".format(rolls=self.rolls)
-
-    # TODO: these aren't precise enough for the final frame
     def _is_strike(self):
         return self.rolls and self.rolls[0] == 10
 
@@ -49,9 +55,9 @@ class Frame:
 
 class FinalFrame(Frame):
     def is_complete(self):
-        if self._is_spare() and len(self.rolls) >= 3:
+        if len(self.rolls) >= 3:
             return True
-        if self._is_strike() and len(self.rolls) >= 2:
+        elif len(self.rolls) == 2 and (self.rolls[0] + self.rolls[1] < 10):
             return True
 
         return False
@@ -69,7 +75,7 @@ class FinalFrame(Frame):
 
 class BowlingGame:
     def __init__(self):
-        self.current_frame = Frame()
+        self.current_frame = NormalFrame()
         self.frames = [self.current_frame]
 
     def roll(self, pin_count):
@@ -79,7 +85,7 @@ class BowlingGame:
             if is_final_frame:
                 new_frame = FinalFrame(prev_frame=self.current_frame)
             else:
-                new_frame = Frame(prev_frame=self.current_frame)
+                new_frame = NormalFrame(prev_frame=self.current_frame)
             self.current_frame.next_frame = new_frame
             self.current_frame = new_frame
             self.frames.append(new_frame)
