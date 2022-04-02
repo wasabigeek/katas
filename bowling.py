@@ -13,13 +13,16 @@ class Frame:
     def add_roll(self, pin_count):
         self.rolls.append(pin_count)
 
-    def base_score(self):
+    def score(self):
+        return self._base_score() + self._bonus_score()
+
+    def _base_score(self):
         score = 0
         for roll in self.rolls:
             score += roll
         return score
 
-    def bonus_score(self):
+    def _bonus_score(self):
         raise NotImplementedError
 
     def __str__(self):
@@ -34,7 +37,7 @@ class NormalFrame(Frame):
 
         return False
 
-    def bonus_score(self):
+    def _bonus_score(self):
         if self.next_frame is None:
             return 0
 
@@ -62,7 +65,7 @@ class FinalFrame(Frame):
 
         return False
 
-    def bonus_score(self):
+    def _bonus_score(self):
         if len(self.rolls) < 3:
             return 0
         elif self.rolls[0] == 10:
@@ -93,8 +96,7 @@ class BowlingGame:
     def score(self):
         score = 0
         for frame in self.frames:
-            score += frame.base_score()
-            score += frame.bonus_score()
+            score += frame.score()
         return score
 
 
