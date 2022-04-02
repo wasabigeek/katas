@@ -2,24 +2,16 @@ class Frame:
     """
     Knowledge of when a frame is done and what rolls are in the frame
     """
-    def __init__(self, is_final=False, prev_frame=None):
+    def __init__(self, prev_frame=None):
         self.rolls = []
-        self.is_final = is_final
         self.prev_frame = None
         self.next_frame = None
 
     def is_complete(self):
-        # spare or normal
-        if not self.is_final: # I guess this is why uncle bob introduces a new class
-            if len(self.rolls) >= 2:
-                return True
-            if self._is_strike():
-                return True
-        else:
-            if self._is_spare() and len(self.rolls) >= 3:
-                return True
-            if self._is_strike() and len(self.rolls) >= 2:
-                return True
+        if len(self.rolls) >= 2:
+            return True
+        if self._is_strike():
+            return True
 
         return False
 
@@ -33,14 +25,6 @@ class Frame:
         return score
 
     def bonus_score(self):
-        if self.is_final:
-            if len(self.rolls) < 3:
-                return 0
-            elif self.rolls[0] == 10:
-                return self.rolls[1] + self.rolls[2]
-            elif self.rolls[1] == 10 or (self.rolls[0] + self.rolls[1] == 10):
-                return self.rolls[2]
-
         if self.next_frame is None:
             return 0
 
@@ -63,6 +47,25 @@ class Frame:
     def _is_spare(self):
         return len(self.rolls) > 1 and (self.rolls[0] + self.rolls[1] == 10)
 
+class FinalFrame(Frame):
+    def is_complete(self):
+        if self._is_spare() and len(self.rolls) >= 3:
+            return True
+        if self._is_strike() and len(self.rolls) >= 2:
+            return True
+
+        return False
+
+    def bonus_score(self):
+        if len(self.rolls) < 3:
+            return 0
+        elif self.rolls[0] == 10:
+            return self.rolls[1] + self.rolls[2]
+        elif self.rolls[1] == 10 or (self.rolls[0] + self.rolls[1] == 10):
+            return self.rolls[2]
+
+        return 0
+
 
 class BowlingGame:
     def __init__(self):
@@ -73,7 +76,10 @@ class BowlingGame:
         self.current_frame.add_roll(pin_count)
         if self.current_frame.is_complete() and len(self.frames) < 10:
             is_final_frame = len(self.frames) == 9
-            new_frame = Frame(is_final=is_final_frame, prev_frame=self.current_frame)
+            if is_final_frame:
+                new_frame = FinalFrame(prev_frame=self.current_frame)
+            else:
+                new_frame = Frame(prev_frame=self.current_frame)
             self.current_frame.next_frame = new_frame
             self.current_frame = new_frame
             self.frames.append(new_frame)
@@ -125,5 +131,29 @@ game.roll(5)
 game.roll(5)
 game.roll(5)
 assert game.score() == 92
+assert len(game.frames) == 10
+
+# strike in first roll of final frame
+game = BowlingGame()
+for i in range(0, 9):
+    game.roll(3)
+    game.roll(5)
+assert game.score() == 72
+game.roll(10)
+game.roll(5)
+game.roll(5)
+assert game.score() == 102
+assert len(game.frames) == 10
+
+# strike in second roll of final frame
+game = BowlingGame()
+for i in range(0, 9):
+    game.roll(3)
+    game.roll(5)
+assert game.score() == 72
+game.roll(5)
+game.roll(10)
+game.roll(5)
+assert game.score() == 97
 assert len(game.frames) == 10
 
