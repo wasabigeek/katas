@@ -2,20 +2,19 @@ import unittest
 
 class Game:
   def __init__(self) -> None:
-    self._score = 0
     self.rolls = [None for i in range(0, 20)]
     self.current_roll = 0
 
   def roll(self, pins):
-    # tempted to remember previous roll in order to calculate score
-    # roll calculates score although name does not imply that
-    self._score += pins
     self.rolls[self.current_roll] = pins
     self.current_roll += 1
 
   def score(self):
-    # does not calculate score although name implies that
-    return self._score
+    temp_score = 0
+    for roll in self.rolls:
+      temp_score += roll
+
+    return temp_score
 
 class TestBowlingGame(unittest.TestCase):
   def setUp(self):
