@@ -1,11 +1,14 @@
 import unittest
 
 class Game:
+  def __init__(self) -> None:
+    self._score = 0
+
   def roll(self, pins):
-    pass
+    self._score += pins
 
   def score(self):
-    return 0
+    return self._score
 
 class TestBowlingGame(unittest.TestCase):
   def test_gutter_game(self):
