@@ -72,5 +72,11 @@ class TestBowlingGame(unittest.TestCase):
     self.roll_many(12, 10)
     self.assertEqual(300, self.game.score())
 
+  # def test_spare_in_last_frame(self):
+  #   self.roll_many(0, 18)
+  #   self.roll_spare()
+  #   self.game.roll(4)
+  #   self.assertEqual(18, self.game.score())
+
 if __name__ == '__main__':
     unittest.main()

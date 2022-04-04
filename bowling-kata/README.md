@@ -19,3 +19,4 @@ Afterward, I followed the [actual kata](./bowling_tdd.py):
 - I found the TDD steps quite nice - I might not have thought to have started with a "gutter game" (all zeros) for example.
 - The caveat is I think it requires a certain sense of how everything already fits together in the beginning - I'm not sure if it would be the same if it wasn't something as well-defined as bowling.
 - There were some nice examples of stopping (and even reverting) to refactor when the design didn't fit the new requirement. The "code smells" were a little vague unfortunately - I think when he says "ugly", he means it doesn't reflect what it represents, what some might call "magic variables".
+- There are bugs for a spare in the final frame! (see commented test)
