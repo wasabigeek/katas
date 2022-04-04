@@ -15,14 +15,16 @@ class TestBowlingGame(unittest.TestCase):
     self.game = Game()
     return super().setUp()
 
+  def roll_many(self, rolls, pins):
+    for i in range(0, rolls):
+      self.game.roll(pins)
+
   def test_gutter_game(self):
-    for i in range(0, 20):
-      self.game.roll(0)
+    self.roll_many(20, 0)
     self.assertEqual(0, self.game.score())
 
   def test_all_ones(self):
-    for i in range(0, 20):
-      self.game.roll(1)
+    self.roll_many(20, 1)
     self.assertEqual(20, self.game.score())
 
 if __name__ == '__main__':
