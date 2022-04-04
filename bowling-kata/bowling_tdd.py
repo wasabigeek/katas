@@ -14,5 +14,11 @@ class TestBowlingGame(unittest.TestCase):
       game.roll(0)
     self.assertEqual(0, game.score())
 
+  def test_all_ones(self):
+    game = Game()
+    for i in range(0, 20):
+      game.roll(1)
+    self.assertEqual(20, game.score())
+
 if __name__ == '__main__':
     unittest.main()
