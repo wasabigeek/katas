@@ -11,11 +11,14 @@ class Game:
 
   def score(self):
     score = 0
-    # change to walk two pins at a time (frames)
     i = 0
     for frame in range(0, 10):
-      score += self.rolls[i] + self.rolls[i + 1]
-      i += 2
+      if (self.rolls[i] + self.rolls[i + 1]) == 10: # spare
+        score += 10 + self.rolls[i + 2]
+        i += 2
+      else:
+        score += self.rolls[i] + self.rolls[i + 1]
+        i += 2
 
     return score
 
@@ -36,12 +39,12 @@ class TestBowlingGame(unittest.TestCase):
     self.roll_many(20, 1)
     self.assertEqual(20, self.game.score())
 
-  # def test_one_spare(self):
-  #   self.game.roll(5)
-  #   self.game.roll(5) # spare
-  #   self.game.roll(3)
-  #   self.roll_many(17, 0)
-  #   self.assertEqual(16, self.game.score())
+  def test_one_spare(self):
+    self.game.roll(5)
+    self.game.roll(5) # spare
+    self.game.roll(3)
+    self.roll_many(17, 0)
+    self.assertEqual(16, self.game.score())
 
 if __name__ == '__main__':
     unittest.main()
