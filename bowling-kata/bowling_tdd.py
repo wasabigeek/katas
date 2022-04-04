@@ -5,9 +5,12 @@ class Game:
     self._score = 0
 
   def roll(self, pins):
+    # tempted to remember previous roll in order to calculate score
+    # roll calculates score although name does not imply that
     self._score += pins
 
   def score(self):
+    # does not calculate score although name implies that
     return self._score
 
 class TestBowlingGame(unittest.TestCase):
