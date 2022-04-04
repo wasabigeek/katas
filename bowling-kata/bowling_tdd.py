@@ -13,7 +13,10 @@ class Game:
     score = 0
     frame_index = 0
     for frame in range(0, 10):
-      if self._is_spare(frame_index):
+      if self.rolls[frame_index] == 10: # strike
+        score += 10 + self.rolls[frame_index + 1] + self.rolls[frame_index + 2]
+        frame_index += 1
+      elif self._is_spare(frame_index):
         score += 10 + self.rolls[frame_index + 2]
         frame_index += 2
       else:
@@ -51,6 +54,13 @@ class TestBowlingGame(unittest.TestCase):
     self.game.roll(3)
     self.roll_many(17, 0)
     self.assertEqual(16, self.game.score())
+
+  def test_one_strike(self):
+    self.game.roll(10)
+    self.game.roll(3)
+    self.game.roll(4)
+    self.roll_many(16, 0)
+    self.assertEqual(24, self.game.score())
 
 if __name__ == '__main__':
     unittest.main()
