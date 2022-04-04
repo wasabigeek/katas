@@ -10,11 +10,14 @@ class Game:
     self.current_roll += 1
 
   def score(self):
-    temp_score = 0
-    for roll in self.rolls:
-      temp_score += roll
+    score = 0
+    # change to walk two pins at a time (frames)
+    i = 0
+    for frame in range(0, 10):
+      score += self.rolls[i] + self.rolls[i + 1]
+      i += 2
 
-    return temp_score
+    return score
 
 class TestBowlingGame(unittest.TestCase):
   def setUp(self):
