@@ -27,5 +27,12 @@ class TestBowlingGame(unittest.TestCase):
     self.roll_many(20, 1)
     self.assertEqual(20, self.game.score())
 
+  def test_one_spare(self):
+    self.game.roll(5)
+    self.game.roll(5) # spare
+    self.game.roll(3)
+    self.roll_many(17, 0)
+    self.assertEqual(16, self.game.score())
+
 if __name__ == '__main__':
     unittest.main()
