@@ -13,7 +13,7 @@ class Game:
     score = 0
     frame_index = 0
     for frame in range(0, 10):
-      if self.rolls[frame_index] == 10: # strike
+      if self._is_strike(frame_index):
         score += 10 + self.rolls[frame_index + 1] + self.rolls[frame_index + 2]
         frame_index += 1
       elif self._is_spare(frame_index):
@@ -28,6 +28,9 @@ class Game:
   def _is_spare(self, frame_index):
     return (self.rolls[frame_index] + self.rolls[frame_index + 1]) == 10
 
+  def _is_strike(self, frame_index):
+    return self.rolls[frame_index] == 10
+
 class TestBowlingGame(unittest.TestCase):
   def setUp(self):
     self.game = Game()
@@ -40,6 +43,9 @@ class TestBowlingGame(unittest.TestCase):
   def roll_spare(self):
     self.game.roll(5)
     self.game.roll(5)
+
+  def roll_strike(self):
+    self.game.roll(10)
 
   def test_gutter_game(self):
     self.roll_many(20, 0)
@@ -56,7 +62,7 @@ class TestBowlingGame(unittest.TestCase):
     self.assertEqual(16, self.game.score())
 
   def test_one_strike(self):
-    self.game.roll(10)
+    self.roll_strike()
     self.game.roll(3)
     self.game.roll(4)
     self.roll_many(16, 0)
