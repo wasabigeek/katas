@@ -27,11 +27,21 @@ class Game:
 
   def frames_data(self):
     data = []
+    frame_index = 0
     for frame in range(0, 10):
-      data.append({
+      frame_data = {
         "rolls": [],
         "score": None
-      })
+      }
+      if self.rolls[frame_index] is not None:
+        frame_data["rolls"].append(self.rolls[frame_index])
+        frame_data["score"] = self.rolls[frame_index]
+      if self.rolls[frame_index + 1] is not None:
+        frame_data["rolls"].append(self.rolls[frame_index + 1])
+        frame_data["score"] += self.rolls[frame_index]
+
+      data.append(frame_data)
+      frame_index += 2
 
     return data
 
@@ -131,11 +141,11 @@ class TestBowlingGameScorecard(unittest.TestCase):
     )
 
   def test_partial_frame(self):
-    self.roll_many(1, 3)
+    self.roll_many(3, 3)
     self.assertEqual(
       [
+        { "rolls": [3, 3], "score": 6 },
         { "rolls": [3], "score": 3 },
-        { "rolls": [], "score": None },
         { "rolls": [], "score": None },
         { "rolls": [], "score": None },
         { "rolls": [], "score": None },
