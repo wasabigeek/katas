@@ -20,3 +20,15 @@ Afterward, I followed the [actual kata](./bowling_tdd.py):
 - The caveat is I think it requires a certain sense of how everything already fits together in the beginning - I'm not sure if it would be the same if it wasn't something as well-defined as bowling.
 - There were some nice examples of stopping (and even reverting) to refactor when the design didn't fit the new requirement. The "code smells" were a little vague unfortunately - I think when he says "ugly", he means it doesn't reflect what it represents, what some might call "magic variables".
 - There are bugs for a spare in the final frame! (see commented test)
+
+## How do new requirements fare?
+- Show the running score for each frame
+  - For frames that have spare or strike, wait until all needed info is present before scoring (e.g. for a strike, only calculate the score when the next 2 rolls are present)
+  - An implicit requirement, we want this class to be reusable in multiple presentation contexts e.g. printing in the CLI, displaying on a website.
+- Bowling Variations
+  - 10 pin bowling
+  - 9 pin bowling
+- Generic game scorer?
+
+## How readable?
+- Change class / method names to random stuff
