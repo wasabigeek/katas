@@ -35,11 +35,18 @@ class Game:
       }
       if self.rolls[frame_index] is not None:
         frame_data["rolls"].append(self.rolls[frame_index])
-        if self.rolls[frame_index + 1] is not None:
-          frame_data["score"] = self.rolls[frame_index]
       if self.rolls[frame_index + 1] is not None:
         frame_data["rolls"].append(self.rolls[frame_index + 1])
-        frame_data["score"] += self.rolls[frame_index]
+
+      if self.rolls[frame_index] and self.rolls[frame_index + 1]:
+        if self._is_spare(frame_index):
+          if self.rolls[frame_index + 2]:
+            frame_data["score"] = self.rolls[frame_index] + self.rolls[frame_index] + self.rolls[frame_index + 2]
+          # note: skips scoring if there not enough info to calculate score yet
+        # normal roll
+        else:
+          frame_data["score"] = self.rolls[frame_index] + self.rolls[frame_index]
+
 
       data.append(frame_data)
       frame_index += 2
@@ -52,7 +59,6 @@ class Game:
   def _is_strike(self, frame_index):
     return self._get_roll_score(frame_index) == 10
 
-  # trying my best to avoid adding new objects as an experiment
   def _get_roll_score(self, index):
     if self.rolls[index] is None:
       return 0
@@ -159,23 +165,24 @@ class TestBowlingGameScorecard(unittest.TestCase):
       self.game.frames_data()
     )
 
-  # def test_spare_incomplete(self):
-  #   self.roll_spare()
-  #   self.assertEqual(
-  #     [
-  #       { "rolls": [5, 5], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #     ],
-  #     self.game.frames_data()
-  #   )
+  def test_spare(self):
+    self.roll_spare()
+    self.game.roll(3)
+    self.assertEqual(
+      [
+        { "rolls": [5, 5], "score": 13 },
+        { "rolls": [3], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+      ],
+      self.game.frames_data()
+    )
 
 if __name__ == '__main__':
     unittest.main()
