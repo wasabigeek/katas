@@ -23,8 +23,10 @@ Afterward, I followed the [actual kata](./bowling_tdd.py):
 
 ## How do new requirements fare?
 - Show the running score for each frame
-  - For frames that have spare or strike, wait until all needed info is present before scoring (e.g. for a strike, only calculate the score when the next 2 rolls are present)
-  - An implicit requirement, we want this class to be reusable in multiple presentation contexts e.g. printing in the CLI, displaying on a website.
+  - Wait until all needed info is present before scoring a frame e.g.:
+    - For frames that have not completed rolls, do not calculate the score
+    - For frames that have spare or strike, wait until all needed info is present before scoring (e.g. for a strike, only calculate the score when the next 2 rolls are present)
+  - An implicit requirement, we want this class to be reusable in multiple presentation contexts e.g. printing in the CLI, displaying on a website. Thus, Game should have a method `frames_data` to export a dictionary.
 - Bowling Variations
   - 10 pin bowling
   - 9 pin bowling

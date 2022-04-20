@@ -35,7 +35,8 @@ class Game:
       }
       if self.rolls[frame_index] is not None:
         frame_data["rolls"].append(self.rolls[frame_index])
-        frame_data["score"] = self.rolls[frame_index]
+        if self.rolls[frame_index + 1] is not None:
+          frame_data["score"] = self.rolls[frame_index]
       if self.rolls[frame_index + 1] is not None:
         frame_data["rolls"].append(self.rolls[frame_index + 1])
         frame_data["score"] += self.rolls[frame_index]
@@ -145,7 +146,7 @@ class TestBowlingGameScorecard(unittest.TestCase):
     self.assertEqual(
       [
         { "rolls": [3, 3], "score": 6 },
-        { "rolls": [3], "score": 3 },
+        { "rolls": [3], "score": None },
         { "rolls": [], "score": None },
         { "rolls": [], "score": None },
         { "rolls": [], "score": None },
@@ -157,6 +158,24 @@ class TestBowlingGameScorecard(unittest.TestCase):
       ],
       self.game.frames_data()
     )
+
+  # def test_spare_incomplete(self):
+  #   self.roll_spare()
+  #   self.assertEqual(
+  #     [
+  #       { "rolls": [5, 5], "score": None },
+  #       { "rolls": [], "score": None },
+  #       { "rolls": [], "score": None },
+  #       { "rolls": [], "score": None },
+  #       { "rolls": [], "score": None },
+  #       { "rolls": [], "score": None },
+  #       { "rolls": [], "score": None },
+  #       { "rolls": [], "score": None },
+  #       { "rolls": [], "score": None },
+  #       { "rolls": [], "score": None },
+  #     ],
+  #     self.game.frames_data()
+  #   )
 
 if __name__ == '__main__':
     unittest.main()
