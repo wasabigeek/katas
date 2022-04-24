@@ -1,3 +1,6 @@
+import unittest
+
+
 class Frame:
     """
     Knowledge of when a frame is done and what rolls are in the frame
@@ -44,8 +47,16 @@ class NormalFrame(Frame):
             return self.next_frame.rolls[0]
 
         if self._is_strike() and len(self.next_frame.rolls) > 0:
-            # FIXME: IndexError if next_frame only has one roll
-            return self.next_frame.rolls[0] + self.next_frame.rolls[1]
+            # change the logic to "until total_rolls == 2 or no more rolls in next frame"?
+            # could be recursive e.g. get next_rolls(num_rolls)
+            score = self.next_frame.rolls[0]
+            # 2 rolls in the next frame
+            if len(self.next_frame.rolls) >= 2:
+                score += self.next_frame.rolls[1]
+            # multiple strikes in a row
+            elif len(self.next_frame.rolls) == 1 and (self.next_frame.next_frame and self.next_frame.next_frame):
+                score += self.next_frame.next_frame.rolls[0]
+            return score
 
         return 0
 
@@ -65,15 +76,6 @@ class FinalFrame(Frame):
         return False
 
     def _bonus_score(self):
-        if len(self.rolls) < 3:
-            return 0
-        # strike in first roll
-        elif self.rolls[0] == 10:
-            return self.rolls[1] + self.rolls[2]
-        # strike in second rolls or spare in first two rolls
-        elif self.rolls[1] == 10 or (self.rolls[0] + self.rolls[1] == 10):
-            return self.rolls[2]
-
         return 0
 
 
@@ -100,69 +102,52 @@ class BowlingGame:
             score += frame.score()
         return score
 
+class TestBowlingGame(unittest.TestCase):
+  def setUp(self):
+    self.game = BowlingGame()
+    return super().setUp()
 
-game = BowlingGame()
-game.roll(2)
-assert len(game.frames) == 1
-assert game.score() == 2
+  def roll_many(self, rolls, pins):
+    for i in range(0, rolls):
+      self.game.roll(pins)
 
-# test spare
-game.roll(8)
-assert len(game.frames) == 2
-assert game.score() == 10
+  def roll_spare(self):
+    self.game.roll(5)
+    self.game.roll(5)
 
-game.roll(5)
-assert len(game.frames) == 2
-assert game.score() == 20  # next roll after spare is doubled
+  def roll_strike(self):
+    self.game.roll(10)
 
-game.roll(1)
-assert len(game.frames) == 3
-assert game.score() == 21
+  def test_gutter_game(self):
+    self.roll_many(20, 0)
+    self.assertEqual(0, self.game.score())
 
-# strike
-game.roll(10)
-assert len(game.frames) == 4
-assert game.score() == 31
+  def test_all_ones(self):
+    self.roll_many(20, 1)
+    self.assertEqual(20, self.game.score())
 
-# 2 rolls after strike are doubled
-game.roll(3)
-game.roll(4)
-assert len(game.frames) == 5
-assert game.score() == 45
+  def test_one_spare(self):
+    self.roll_spare()
+    self.game.roll(3)
+    self.roll_many(17, 0)
+    self.assertEqual(16, self.game.score())
 
-# spare in final frame
-game = BowlingGame()
-for i in range(0, 9):
-    game.roll(3)
-    game.roll(5)
-assert game.score() == 72
-game.roll(5)
-game.roll(5)
-game.roll(5)
-assert game.score() == 92
-assert len(game.frames) == 10
+  def test_one_strike(self):
+    self.roll_strike()
+    self.game.roll(3)
+    self.game.roll(4)
+    self.roll_many(16, 0)
+    self.assertEqual(24, self.game.score())
 
-# strike in first roll of final frame
-game = BowlingGame()
-for i in range(0, 9):
-    game.roll(3)
-    game.roll(5)
-assert game.score() == 72
-game.roll(10)
-game.roll(5)
-game.roll(5)
-assert game.score() == 102
-assert len(game.frames) == 10
+  def test_perfect_game(self):
+    self.roll_many(12, 10)
+    self.assertEqual(300, self.game.score())
 
-# strike in second roll of final frame
-game = BowlingGame()
-for i in range(0, 9):
-    game.roll(3)
-    game.roll(5)
-assert game.score() == 72
-game.roll(5)
-game.roll(10)
-game.roll(5)
-assert game.score() == 97
-assert len(game.frames) == 10
+  def test_spare_in_last_frame(self):
+    self.roll_many(18, 0)
+    self.roll_spare()
+    self.game.roll(4)
+    self.assertEqual(14, self.game.score())
 
+if __name__ == '__main__':
+    unittest.main()
