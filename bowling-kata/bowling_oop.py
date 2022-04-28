@@ -18,7 +18,7 @@ class Frame:
     def score(self):
         return self._base_score() + self._bonus_score()
 
-    def get_next_rolls(self, num_rolls):
+    def walk_by_rolls(self, num_rolls):
         """Get the next num_rolls rolls from this and following frames, if any. Useful for calculating bonus scores."""
         if num_rolls <= 0:
             return []
@@ -26,7 +26,7 @@ class Frame:
         if num_rolls >= len(self.rolls):
             recursed_rolls = list(self.rolls)
             if self.next_frame is not None:
-                recursed_rolls += self.next_frame.get_next_rolls(num_rolls - len(self.rolls))
+                recursed_rolls += self.next_frame.walk_by_rolls(num_rolls - len(self.rolls))
 
             return recursed_rolls
         else:
@@ -61,7 +61,7 @@ class NormalFrame(Frame):
             num_bonus_rolls = 2
 
         score = 0
-        for roll in self.next_frame.get_next_rolls(num_bonus_rolls):
+        for roll in self.next_frame.walk_by_rolls(num_bonus_rolls):
             score += roll
         return score
 
