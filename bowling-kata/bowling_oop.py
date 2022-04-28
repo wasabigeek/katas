@@ -18,6 +18,20 @@ class Frame:
     def score(self):
         return self._base_score() + self._bonus_score()
 
+    def get_next_rolls(self, num_rolls):
+        """Get the next num_rolls rolls from this and following frames, if any. Useful for calculating bonus scores."""
+        if num_rolls <= 0:
+            return []
+
+        if num_rolls >= len(self.rolls):
+            recursed_rolls = list(self.rolls)
+            if self.next_frame is not None:
+                recursed_rolls += self.next_frame.get_next_rolls(num_rolls - len(self.rolls))
+
+            return recursed_rolls
+        else:
+            return self.rolls[:num_rolls]
+
     def _base_score(self):
         score = 0
         for roll in self.rolls:
@@ -47,15 +61,9 @@ class NormalFrame(Frame):
             return self.next_frame.rolls[0]
 
         if self._is_strike() and len(self.next_frame.rolls) > 0:
-            # change the logic to "until total_rolls == 2 or no more rolls in next frame"?
-            # could be recursive e.g. get next_rolls(num_rolls)
-            score = self.next_frame.rolls[0]
-            # 2 rolls in the next frame
-            if len(self.next_frame.rolls) >= 2:
-                score += self.next_frame.rolls[1]
-            # multiple strikes in a row
-            elif len(self.next_frame.rolls) == 1 and (self.next_frame.next_frame and self.next_frame.next_frame):
-                score += self.next_frame.next_frame.rolls[0]
+            score = 0
+            for roll in self.next_frame.get_next_rolls(2):
+                score += roll
             return score
 
         return 0
