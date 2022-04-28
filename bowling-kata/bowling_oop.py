@@ -54,19 +54,16 @@ class NormalFrame(Frame):
         return False
 
     def _bonus_score(self):
-        if self.next_frame is None:
-            return 0
+        num_bonus_rolls = 0
+        if self._is_spare():
+            num_bonus_rolls = 1
+        elif self._is_strike():
+            num_bonus_rolls = 2
 
-        if self._is_spare() and len(self.next_frame.rolls) > 0:
-            return self.next_frame.rolls[0]
-
-        if self._is_strike() and len(self.next_frame.rolls) > 0:
-            score = 0
-            for roll in self.next_frame.get_next_rolls(2):
-                score += roll
-            return score
-
-        return 0
+        score = 0
+        for roll in self.next_frame.get_next_rolls(num_bonus_rolls):
+            score += roll
+        return score
 
     def _is_strike(self):
         return self.rolls and self.rolls[0] == 10
