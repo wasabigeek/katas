@@ -12,55 +12,73 @@ class Game:
 
   def score(self):
     score = 0
-    roll_index = 0
-    for frame in range(0, 10):
-      if self._is_strike(roll_index):
-        score += 10 + self._get_roll_score(roll_index + 1) + self._get_roll_score(roll_index + 2)
-        roll_index += 1
-      elif self._is_spare(roll_index):
-        score += 10 + self._get_roll_score(roll_index + 2)
-        roll_index += 2
-      else:
-        score += self._get_roll_score(roll_index) + self._get_roll_score(roll_index + 1)
-        roll_index += 2
+    def strike_fn(roll_index):
+      nonlocal score
+      score += 10 + self._get_roll_score(roll_index + 1) + self._get_roll_score(roll_index + 2)
+    def spare_fn(roll_index):
+      nonlocal score
+      score += 10 + self._get_roll_score(roll_index + 2)
+    def normal_fn(roll_index):
+      nonlocal score
+      score += self._get_roll_score(roll_index) + self._get_roll_score(roll_index + 1)
+
+    self._traverse_rolls(
+      strike_fn,
+      spare_fn,
+      normal_fn
+    )
 
     return score
 
   def frames_data(self):
     data = []
+    def strike_fn(roll_index):
+      pass
+    def spare_fn(roll_index):
+      nonlocal data
+      frame_rolls = list(filter(
+        lambda roll: roll is not None,
+        [self.rolls[roll_index], self.rolls[roll_index + 1]]
+      ))
+      frame_score = None
+      if len(frame_rolls) == 2 and self.rolls[roll_index + 2] is not None:
+        frame_score = self._get_roll_score(roll_index) + self._get_roll_score(roll_index + 1) + self._get_roll_score(roll_index + 2)
+
+      data.append({
+        "rolls": frame_rolls,
+        "score": frame_score
+      })
+
+    def normal_fn(roll_index):
+      nonlocal data
+      frame_rolls = list(filter(
+        lambda roll: roll is not None,
+        [self.rolls[roll_index], self.rolls[roll_index + 1]]
+      ))
+      data.append({
+        "rolls": frame_rolls,
+        "score": self._get_roll_score(roll_index) + self._get_roll_score(roll_index + 1) if len(frame_rolls) == 2 else None
+      })
+
+    self._traverse_rolls(
+      strike_fn,
+      spare_fn,
+      normal_fn
+    )
+    return data
+
+  def _traverse_rolls(self, strike_fn, spare_fn, normal_fn):
     roll_index = 0
     for frame in range(0, 10):
       if self._is_strike(roll_index):
-        # TODO
+        strike_fn(roll_index)
         roll_index += 1
       elif self._is_spare(roll_index):
-        frame_rolls = list(filter(
-          lambda roll: roll is not None,
-          [self.rolls[roll_index], self.rolls[roll_index + 1]]
-        ))
-        frame_score = None
-        if len(frame_rolls) == 2 and self.rolls[roll_index + 2] is not None:
-          frame_score = self._get_roll_score(roll_index) + self._get_roll_score(roll_index + 1) + self._get_roll_score(roll_index + 2)
-
-        frame_data = {
-          "rolls": frame_rolls,
-          "score": frame_score
-        }
+        spare_fn(roll_index)
         roll_index += 2
       else:
-        frame_rolls = list(filter(
-          lambda roll: roll is not None,
-          [self.rolls[roll_index], self.rolls[roll_index + 1]]
-        ))
-        frame_data = {
-          "rolls": frame_rolls,
-          "score": self._get_roll_score(roll_index) + self._get_roll_score(roll_index + 1) if len(frame_rolls) == 2 else None
-        }
+        normal_fn(roll_index)
         roll_index += 2
-
-      data.append(frame_data)
-
-    return data
 
   def _is_spare(self, roll_index):
     return (self._get_roll_score(roll_index) + self._get_roll_score(roll_index + 1)) == 10
