@@ -103,25 +103,16 @@ class BowlingGame:
 
     def score(self):
         score = 0
-        cursor_frame = self.root_frame
-
-        while True:
-            score += cursor_frame.score()
-            cursor_frame = cursor_frame.next_frame
-            if cursor_frame is None:
-                break
-
+        def collate_score_func(frame):
+            nonlocal score
+            score += frame.score()
+        self._walk_frames(collate_score_func)
         return score
 
     def frames_data(self):
         data = []
-        cursor_frame = self.root_frame
-        while True:
-            data.append(cursor_frame.data())
-            cursor_frame = cursor_frame.next_frame
-            if cursor_frame is None:
-                break
-
+        collate_data_func = lambda frame: data.append(frame.data())
+        self._walk_frames(collate_data_func)
         return data
 
     def _init_frames(self):
@@ -134,6 +125,15 @@ class BowlingGame:
         cursor.next_frame = FinalFrame()
 
         return root
+
+    def _walk_frames(self, function):
+        cursor_frame = self.root_frame
+        while True:
+            function(cursor_frame)
+            cursor_frame = cursor_frame.next_frame
+            if cursor_frame is None:
+                break
+
 
 class TestBowlingGame(unittest.TestCase):
   def setUp(self):
