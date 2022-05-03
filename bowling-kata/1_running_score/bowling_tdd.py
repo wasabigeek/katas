@@ -11,39 +11,39 @@ class Game:
 
   def score(self):
     score = 0
-    frame_index = 0
+    roll_index = 0
     for frame in range(0, 10):
-      if self._is_strike(frame_index):
-        score += 10 + self._get_roll_score(frame_index + 1) + self._get_roll_score(frame_index + 2)
-        frame_index += 1
-      elif self._is_spare(frame_index):
-        score += 10 + self._get_roll_score(frame_index + 2)
-        frame_index += 2
+      if self._is_strike(roll_index):
+        score += 10 + self._get_roll_score(roll_index + 1) + self._get_roll_score(roll_index + 2)
+        roll_index += 1
+      elif self._is_spare(roll_index):
+        score += 10 + self._get_roll_score(roll_index + 2)
+        roll_index += 2
       else:
-        score += self._get_roll_score(frame_index) + self._get_roll_score(frame_index + 1)
-        frame_index += 2
+        score += self._get_roll_score(roll_index) + self._get_roll_score(roll_index + 1)
+        roll_index += 2
 
     return score
 
   def frames_data(self):
     data = []
-    frame_index = 0
+    roll_index = 0
     for frame in range(0, 10):
-      if self._is_strike(frame_index):
+      if self._is_strike(roll_index):
         # TODO
-        frame_index += 1
-      elif self._is_spare(frame_index):
+        roll_index += 1
+      elif self._is_spare(roll_index):
         # TODO
-        frame_index += 2
+        roll_index += 2
       else:
         frame_data = {
           "rolls": [],
           "score": None
         }
-        frame_index += 2
+        roll_index += 2
 
       data.append(frame_data)
-      frame_index += 2
+      roll_index += 2
 
     return data
 
@@ -52,31 +52,31 @@ class Game:
     #     "rolls": [],
     #     "score": None
     #   }
-    #   if self.rolls[frame_index] is not None:
-    #     frame_data["rolls"].append(self.rolls[frame_index])
-    #   if self.rolls[frame_index + 1] is not None:
-    #     frame_data["rolls"].append(self.rolls[frame_index + 1])
+    #   if self.rolls[roll_index] is not None:
+    #     frame_data["rolls"].append(self.rolls[roll_index])
+    #   if self.rolls[roll_index + 1] is not None:
+    #     frame_data["rolls"].append(self.rolls[roll_index + 1])
 
-    #   if self.rolls[frame_index] and self.rolls[frame_index + 1]:
-    #     if self._is_spare(frame_index):
-    #       if self.rolls[frame_index + 2]:
-    #         frame_data["score"] = self.rolls[frame_index] + self.rolls[frame_index] + self.rolls[frame_index + 2]
+    #   if self.rolls[roll_index] and self.rolls[roll_index + 1]:
+    #     if self._is_spare(roll_index):
+    #       if self.rolls[roll_index + 2]:
+    #         frame_data["score"] = self.rolls[roll_index] + self.rolls[roll_index] + self.rolls[roll_index + 2]
     #       # note: skips scoring if there not enough info to calculate score yet
     #     # normal roll
     #     else:
-    #       frame_data["score"] = self.rolls[frame_index] + self.rolls[frame_index]
+    #       frame_data["score"] = self.rolls[roll_index] + self.rolls[roll_index]
 
 
     #   data.append(frame_data)
-    #   frame_index += 2
+    #   roll_index += 2
 
     # return data
 
-  def _is_spare(self, frame_index):
-    return (self._get_roll_score(frame_index) + self._get_roll_score(frame_index + 1)) == 10
+  def _is_spare(self, roll_index):
+    return (self._get_roll_score(roll_index) + self._get_roll_score(roll_index + 1)) == 10
 
-  def _is_strike(self, frame_index):
-    return self._get_roll_score(frame_index) == 10
+  def _is_strike(self, roll_index):
+    return self._get_roll_score(roll_index) == 10
 
   def _get_roll_score(self, index):
     if len(self.rolls) < index + 1:  # prevent IndexError, should only be possible on the last frame
