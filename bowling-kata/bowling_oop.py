@@ -19,7 +19,10 @@ class Frame:
         return self._base_score() + self._bonus_score()
 
     def walk_by_rolls(self, num_rolls):
-        """Get the next num_rolls rolls from this and following frames, if any. Useful for calculating bonus scores."""
+        """
+        Get the next num_rolls rolls from this and following frames, if any. Useful for calculating bonus scores.
+        Note: one key assumption here is that you only start from a frame (as opposed to a roll), which happens to work OK in bowling.
+        """
         if num_rolls <= 0:
             return []
 
@@ -61,7 +64,7 @@ class NormalFrame(Frame):
             num_bonus_rolls = 2
 
         score = 0
-        for roll in self.next_frame.walk_by_rolls(num_bonus_rolls):
+        for roll in self.next_frame.walk_by_rolls(num_bonus_rolls): # assumes all frames already created by the time this is called
             score += roll
         return score
 
