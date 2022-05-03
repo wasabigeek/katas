@@ -34,7 +34,18 @@ class Game:
         # TODO
         roll_index += 1
       elif self._is_spare(roll_index):
-        # TODO
+        frame_rolls = list(filter(
+          lambda roll: roll is not None,
+          [self.rolls[roll_index], self.rolls[roll_index + 1]]
+        ))
+        frame_score = None
+        if len(frame_rolls) == 2 and self.rolls[roll_index + 2] is not None:
+          frame_score = self._get_roll_score(roll_index) + self._get_roll_score(roll_index + 1) + self._get_roll_score(roll_index + 2)
+
+        frame_data = {
+          "rolls": frame_rolls,
+          "score": frame_score
+        }
         roll_index += 2
       else:
         frame_rolls = list(filter(
@@ -50,31 +61,6 @@ class Game:
       data.append(frame_data)
 
     return data
-
-    # for frame in range(0, 10):
-    #   frame_data = {
-    #     "rolls": [],
-    #     "score": None
-    #   }
-    #   if self.rolls[roll_index] is not None:
-    #     frame_data["rolls"].append(self.rolls[roll_index])
-    #   if self.rolls[roll_index + 1] is not None:
-    #     frame_data["rolls"].append(self.rolls[roll_index + 1])
-
-    #   if self.rolls[roll_index] and self.rolls[roll_index + 1]:
-    #     if self._is_spare(roll_index):
-    #       if self.rolls[roll_index + 2]:
-    #         frame_data["score"] = self.rolls[roll_index] + self.rolls[roll_index] + self.rolls[roll_index + 2]
-    #       # note: skips scoring if there not enough info to calculate score yet
-    #     # normal roll
-    #     else:
-    #       frame_data["score"] = self.rolls[roll_index] + self.rolls[roll_index]
-
-
-    #   data.append(frame_data)
-    #   roll_index += 2
-
-    # return data
 
   def _is_spare(self, roll_index):
     return (self._get_roll_score(roll_index) + self._get_roll_score(roll_index + 1)) == 10
@@ -190,24 +176,24 @@ class TestBowlingGameScorecard(unittest.TestCase):
       self.game.frames_data()
     )
 
-  # def test_spare(self):
-  #   self.roll_spare()
-  #   self.game.roll(3)
-  #   self.assertEqual(
-  #     [
-  #       { "rolls": [5, 5], "score": 13 },
-  #       { "rolls": [3], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #     ],
-  #     self.game.frames_data()
-  #   )
+  def test_spare(self):
+    self.roll_spare()
+    self.game.roll(3)
+    self.assertEqual(
+      [
+        { "rolls": [5, 5], "score": 13 },
+        { "rolls": [3], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+      ],
+      self.game.frames_data()
+    )
 
 if __name__ == '__main__':
     unittest.main()
