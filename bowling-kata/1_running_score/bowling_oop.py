@@ -90,13 +90,7 @@ class FinalFrame(Frame):
 
 class BowlingGame:
     def __init__(self):
-        self.root_frame = NormalFrame()
-        cursor = self.root_frame
-        for i in range(0, 8):
-            new_frame = NormalFrame()
-            cursor.next_frame = new_frame
-            cursor = new_frame
-        cursor.next_frame = FinalFrame()
+        self.root_frame = self._init_frames()
         self.current_frame = self.root_frame
 
     def roll(self, pin_count):
@@ -129,6 +123,17 @@ class BowlingGame:
           { "rolls": [], "score": None },
           { "rolls": [], "score": None },
         ]
+
+    def _init_frames(self):
+        root = NormalFrame()
+        cursor = root
+        for i in range(0, 8):
+            new_frame = NormalFrame()
+            cursor.next_frame = new_frame
+            cursor = new_frame
+        cursor.next_frame = FinalFrame()
+
+        return root
 
 class TestBowlingGame(unittest.TestCase):
   def setUp(self):
