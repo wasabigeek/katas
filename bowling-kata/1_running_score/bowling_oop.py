@@ -15,9 +15,6 @@ class Frame:
     def add_roll(self, pin_count):
         self.rolls.append(pin_count)
 
-    def data(self):
-        return { "rolls": [], "score": None }
-
     def score(self):
         return self._base_score() + self._bonus_score()
 
@@ -114,7 +111,18 @@ class BowlingGame:
         return score
 
     def frames_data(self):
-        return [frame.data() for frame in self.frames]
+        return [
+          { "rolls": [], "score": None },
+          { "rolls": [], "score": None },
+          { "rolls": [], "score": None },
+          { "rolls": [], "score": None },
+          { "rolls": [], "score": None },
+          { "rolls": [], "score": None },
+          { "rolls": [], "score": None },
+          { "rolls": [], "score": None },
+          { "rolls": [], "score": None },
+          { "rolls": [], "score": None },
+        ]
 
 class TestBowlingGame(unittest.TestCase):
   def setUp(self):
