@@ -7,6 +7,7 @@ class Frame:
     """
     def __init__(self):
         self.rolls = []
+        # this seems like an opportunity for a iterator / python generator
         self.next_frame = None
 
     def is_complete(self):
@@ -89,10 +90,24 @@ class FinalFrame(Frame):
 
 class BowlingGame:
     def __init__(self):
+        self.root_frame = NormalFrame()
+        cursor = self.root_frame
+        for i in range(0, 8):
+            new_frame = NormalFrame()
+            cursor.next_frame = new_frame
+            cursor = new_frame
+        cursor.next_frame = FinalFrame()
+
+        # TODO: remove after refactor?
+        self._current_frame = self.root_frame
         self.current_frame = NormalFrame()
         self.frames = [self.current_frame]
 
     def roll(self, pin_count):
+        self._current_frame.add_roll(pin_count)
+        if self._current_frame.is_complete():
+            self._current_frame = self._current_frame.next_frame
+
         self.current_frame.add_roll(pin_count)
         if self.current_frame.is_complete() and len(self.frames) < 10:
             is_final_frame = len(self.frames) == 9
@@ -106,8 +121,16 @@ class BowlingGame:
 
     def score(self):
         score = 0
-        for frame in self.frames:
-            score += frame.score()
+        cursor_frame = self.root_frame
+
+        while True:
+            score += cursor_frame.score()
+            cursor_frame = cursor_frame.next_frame
+            if cursor_frame is None:
+                break
+
+        # for frame in self.frames:
+        #     score += frame.score()
         return score
 
     def frames_data(self):
