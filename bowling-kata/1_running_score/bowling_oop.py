@@ -97,27 +97,12 @@ class BowlingGame:
             cursor.next_frame = new_frame
             cursor = new_frame
         cursor.next_frame = FinalFrame()
-
-        # TODO: remove after refactor?
-        self._current_frame = self.root_frame
-        self.current_frame = NormalFrame()
-        self.frames = [self.current_frame]
+        self.current_frame = self.root_frame
 
     def roll(self, pin_count):
-        self._current_frame.add_roll(pin_count)
-        if self._current_frame.is_complete():
-            self._current_frame = self._current_frame.next_frame
-
         self.current_frame.add_roll(pin_count)
-        if self.current_frame.is_complete() and len(self.frames) < 10:
-            is_final_frame = len(self.frames) == 9
-            if is_final_frame:
-                new_frame = FinalFrame()
-            else:
-                new_frame = NormalFrame()
-            self.current_frame.next_frame = new_frame
-            self.current_frame = new_frame
-            self.frames.append(new_frame)
+        if self.current_frame.is_complete():
+            self.current_frame = self.current_frame.next_frame
 
     def score(self):
         score = 0
@@ -129,8 +114,6 @@ class BowlingGame:
             if cursor_frame is None:
                 break
 
-        # for frame in self.frames:
-        #     score += frame.score()
         return score
 
     def frames_data(self):
