@@ -1,3 +1,4 @@
+import pdb
 import unittest
 
 class Game:
@@ -37,13 +38,15 @@ class Game:
         roll_index += 2
       else:
         frame_data = {
-          "rolls": [],
+          "rolls": list(filter(
+            lambda roll: roll is not None,
+            [self.rolls[roll_index], self.rolls[roll_index + 1]]
+          )),
           "score": None
         }
         roll_index += 2
 
       data.append(frame_data)
-      roll_index += 2
 
     return data
 
