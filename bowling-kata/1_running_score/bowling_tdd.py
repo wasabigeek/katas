@@ -37,12 +37,13 @@ class Game:
         # TODO
         roll_index += 2
       else:
+        frame_rolls = list(filter(
+          lambda roll: roll is not None,
+          [self.rolls[roll_index], self.rolls[roll_index + 1]]
+        ))
         frame_data = {
-          "rolls": list(filter(
-            lambda roll: roll is not None,
-            [self.rolls[roll_index], self.rolls[roll_index + 1]]
-          )),
-          "score": None
+          "rolls": frame_rolls,
+          "score": self._get_roll_score(roll_index) + self._get_roll_score(roll_index + 1) if len(frame_rolls) == 2 else None
         }
         roll_index += 2
 
@@ -171,23 +172,23 @@ class TestBowlingGameScorecard(unittest.TestCase):
       self.game.frames_data()
     )
 
-  # def test_partial_frame(self):
-  #   self.roll_many(3, 3)
-  #   self.assertEqual(
-  #     [
-  #       { "rolls": [3, 3], "score": 6 },
-  #       { "rolls": [3], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #       { "rolls": [], "score": None },
-  #     ],
-  #     self.game.frames_data()
-  #   )
+  def test_partial_frame(self):
+    self.roll_many(3, 3)
+    self.assertEqual(
+      [
+        { "rolls": [3, 3], "score": 6 },
+        { "rolls": [3], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+      ],
+      self.game.frames_data()
+    )
 
   # def test_spare(self):
   #   self.roll_spare()
