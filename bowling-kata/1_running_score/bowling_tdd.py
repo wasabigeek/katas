@@ -33,7 +33,22 @@ class Game:
   def frames_data(self):
     data = []
     def strike_fn(roll_index):
-      pass
+      nonlocal data
+      frame_rolls = list(filter(
+        lambda roll: roll is not None,
+        [self.rolls[roll_index]]
+      ))
+      frame_score = None
+      if self.rolls[roll_index + 1] is not None:
+        frame_score = self._get_roll_score(roll_index) + self._get_roll_score(roll_index + 1) + self._get_roll_score(roll_index + 2)
+        if self.rolls[roll_index + 2] is not None:
+          frame_score = self._get_roll_score(roll_index) + self._get_roll_score(roll_index + 1) + self._get_roll_score(roll_index + 2)
+
+      data.append({
+        "rolls": frame_rolls,
+        "score": frame_score
+      })
+
     def spare_fn(roll_index):
       nonlocal data
       frame_rolls = list(filter(
@@ -201,6 +216,26 @@ class TestBowlingGameScorecard(unittest.TestCase):
       [
         { "rolls": [5, 5], "score": 13 },
         { "rolls": [3], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+      ],
+      self.game.frames_data()
+    )
+
+  def test_strike(self):
+    self.roll_strike()
+    self.game.roll(3)
+    self.game.roll(4)
+    self.assertEqual(
+      [
+        { "rolls": [10], "score": 17 },
+        { "rolls": [3, 4], "score": 7 },
         { "rolls": [], "score": None },
         { "rolls": [], "score": None },
         { "rolls": [], "score": None },

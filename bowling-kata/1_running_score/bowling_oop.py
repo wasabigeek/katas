@@ -255,5 +255,25 @@ class TestBowlingGameScorecard(unittest.TestCase):
       self.game.frames_data()
     )
 
+  def test_strike(self):
+    self.roll_strike()
+    self.game.roll(3)
+    self.game.roll(4)
+    self.assertEqual(
+      [
+        { "rolls": [10], "score": 17 },
+        { "rolls": [3, 4], "score": 7 },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+        { "rolls": [], "score": None },
+      ],
+      self.game.frames_data()
+    )
+
 if __name__ == '__main__':
     unittest.main()
