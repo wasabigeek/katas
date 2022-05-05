@@ -275,5 +275,23 @@ class TestBowlingGameScorecard(unittest.TestCase):
       self.game.frames_data()
     )
 
+  def test_perfect_game(self):
+    self.roll_many(12, 10)
+    self.assertEqual(
+      [
+        { "rolls": [10], "score": 30 },
+        { "rolls": [10], "score": 30 },
+        { "rolls": [10], "score": 30 },
+        { "rolls": [10], "score": 30 },
+        { "rolls": [10], "score": 30 },
+        { "rolls": [10], "score": 30 },
+        { "rolls": [10], "score": 30 },
+        { "rolls": [10], "score": 30 },
+        { "rolls": [10], "score": 30 },
+        { "rolls": [10, 10, 10], "score": 30 },
+      ],
+      self.game.frames_data()
+    )
+
 if __name__ == '__main__':
     unittest.main()

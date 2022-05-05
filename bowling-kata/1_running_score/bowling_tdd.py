@@ -22,25 +22,26 @@ class Rolls:
       sum += self._get_roll_score(i)
     return sum
 
-  def traverse_rolls(self, strike_fn, spare_fn, normal_fn):
+  def traverse_rolls(self, traverser):
     roll_index = 0
-    for frame in range(0, 10):
+    for frame in range(0, 9):
       if self._is_strike(roll_index):
-        strike_fn(roll_index)
+        traverser.strike_fn(roll_index, self)
         roll_index += 1
       elif self._is_spare(roll_index):
-        spare_fn(roll_index)
+        traverser.spare_fn(roll_index, self)
         roll_index += 2
       else:
-        normal_fn(roll_index)
+        traverser.normal_fn(roll_index, self)
         roll_index += 2
+    traverser.final_frame_fn(roll_index, self)
 
   def _get_index(self, index):
     return self._rolls[index]
 
   def _get_roll_score(self, index):
-    # if len(self.rolls) < index + 1:  # prevent IndexError, should only be possible on the last frame
-    #   return 0
+    if len(self._rolls) < index + 1:  # prevent IndexError, should only be possible on the last frame
+      return 0
     if self._get_index(index) is None:  # unrolled
       return 0
     return self._get_index(index)
@@ -52,28 +53,29 @@ class Rolls:
     return self._get_roll_score(roll_index) == 10
 
 class Scorer:
-  def __init__(self, rolls_ref) -> None:
+  def __init__(self) -> None:
     self.score = 0
-    self.rolls = rolls_ref
 
-  def strike_fn(self, roll_index):
-    self.score += 10 + self.rolls.sum_rolled_scores(roll_index + 1, roll_index + 2)
+  def strike_fn(self, roll_index, rolls):
+    self.score += 10 + rolls.sum_rolled_scores(roll_index + 1, roll_index + 2)
 
-  def spare_fn(self, roll_index):
-    self.score += 10 + self.rolls.sum_rolled_scores(roll_index + 2, roll_index + 2)
+  def spare_fn(self, roll_index, rolls):
+    self.score += 10 + rolls.sum_rolled_scores(roll_index + 2, roll_index + 2)
 
-  def normal_fn(self, roll_index):
-    self.score += self.rolls.sum_rolled_scores(roll_index, roll_index + 1)
+  def normal_fn(self, roll_index, rolls):
+    self.score += rolls.sum_rolled_scores(roll_index, roll_index + 1)
+
+  def final_frame_fn(self, roll_index, rolls):
+    self.score += rolls.sum_rolled_scores(roll_index, roll_index + 2)
 
 class FrameDataGenerator:
-  def __init__(self, rolls_ref) -> None:
+  def __init__(self) -> None:
     self.data = []
-    self.rolls = rolls_ref
 
-  def strike_fn(self, roll_index):
-    frame_rolls = self.rolls.get_rolled_rolls(roll_index, roll_index)
+  def strike_fn(self, roll_index, rolls):
+    frame_rolls = rolls.get_rolled_rolls(roll_index, roll_index)
     frame_score = None
-    bonus_score = self.rolls.sum_rolled_scores(roll_index, roll_index + 2)
+    bonus_score = rolls.sum_rolled_scores(roll_index, roll_index + 2)
     if bonus_score:
       frame_score = bonus_score
 
@@ -82,22 +84,29 @@ class FrameDataGenerator:
       "score": frame_score
     })
 
-  def spare_fn(self, roll_index):
-    frame_rolls = self.rolls.get_rolled_rolls(roll_index, roll_index + 1)
+  def spare_fn(self, roll_index, rolls):
+    frame_rolls = rolls.get_rolled_rolls(roll_index, roll_index + 1)
     frame_score = None
     if len(frame_rolls) == 2:
-      frame_score = self.rolls.sum_rolled_scores(roll_index, roll_index + 2)
+      frame_score = rolls.sum_rolled_scores(roll_index, roll_index + 2)
 
     self.data.append({
       "rolls": frame_rolls,
       "score": frame_score
     })
 
-  def normal_fn(self, roll_index):
-    frame_rolls = self.rolls.get_rolled_rolls(roll_index, roll_index + 1)
+  def normal_fn(self, roll_index, rolls):
+    frame_rolls = rolls.get_rolled_rolls(roll_index, roll_index + 1)
     self.data.append({
       "rolls": frame_rolls,
-      "score": self.rolls.sum_rolled_scores(roll_index, roll_index + 1) if len(frame_rolls) == 2 else None
+      "score": rolls.sum_rolled_scores(roll_index, roll_index + 1) if len(frame_rolls) == 2 else None
+    })
+
+  def final_frame_fn(self, roll_index, rolls):
+    frame_rolls = rolls.get_rolled_rolls(roll_index, roll_index + 2)
+    self.data.append({
+      "rolls": frame_rolls,
+      "score": rolls.sum_rolled_scores(roll_index, roll_index + 2) if len(frame_rolls) >= 2 else None
     })
 
 class Game:
@@ -108,23 +117,13 @@ class Game:
     self.rolls.add(pins)
 
   def score(self):
-    scorer = Scorer(self.rolls)
-    self.rolls.traverse_rolls(
-      scorer.strike_fn,
-      scorer.spare_fn,
-      scorer.normal_fn
-    )
-
+    scorer = Scorer()
+    self.rolls.traverse_rolls(scorer)
     return scorer.score
 
   def frames_data(self):
-    data_generator = FrameDataGenerator(self.rolls)
-    self.rolls.traverse_rolls(
-      data_generator.strike_fn,
-      data_generator.spare_fn,
-      data_generator.normal_fn
-    )
-
+    data_generator = FrameDataGenerator()
+    self.rolls.traverse_rolls(data_generator)
     return data_generator.data
 
 class TestBowlingGame(unittest.TestCase):
@@ -263,6 +262,24 @@ class TestBowlingGameScorecard(unittest.TestCase):
         { "rolls": [], "score": None },
         { "rolls": [], "score": None },
         { "rolls": [], "score": None },
+      ],
+      self.game.frames_data()
+    )
+
+  def test_perfect_game(self):
+    self.roll_many(12, 10)
+    self.assertEqual(
+      [
+        { "rolls": [10], "score": 30 },
+        { "rolls": [10], "score": 30 },
+        { "rolls": [10], "score": 30 },
+        { "rolls": [10], "score": 30 },
+        { "rolls": [10], "score": 30 },
+        { "rolls": [10], "score": 30 },
+        { "rolls": [10], "score": 30 },
+        { "rolls": [10], "score": 30 },
+        { "rolls": [10], "score": 30 },
+        { "rolls": [10, 10, 10], "score": 30 },
       ],
       self.game.frames_data()
     )
