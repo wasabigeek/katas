@@ -73,6 +73,9 @@ class FrameDataGenerator:
     self.data = []
 
   def strike_fn(self, roll_index, rolls):
+    # all this frame information could probably go into Rows e.g.
+    # def strike_fn(self, frame_rolls):
+    #   bonus_score = but this is tricky
     frame_rolls = rolls.get_rolled_rolls(roll_index, roll_index)
     frame_score = None
     bonus_score = rolls.sum_rolled_scores(roll_index, roll_index + 2)
