@@ -1,88 +1,28 @@
 import pdb
 import unittest
 
-class Game:
-  def __init__(self) -> None:
-    self.rolls = [None for i in range(0, 20)]
+class Rolls:
+  def __init__(self):
+    self._rolls = [None for i in range(0, 20)]
     self.current_roll = 0
 
-  def roll(self, pins):
-    self.rolls[self.current_roll] = pins
+  def add(self, pins):
+    self._rolls[self.current_roll] = pins
     self.current_roll += 1
 
-  def score(self):
-    score = 0
-    def strike_fn(roll_index):
-      nonlocal score
-      score += 10 + self._get_roll_score(roll_index + 1) + self._get_roll_score(roll_index + 2)
-    def spare_fn(roll_index):
-      nonlocal score
-      score += 10 + self._get_roll_score(roll_index + 2)
-    def normal_fn(roll_index):
-      nonlocal score
-      score += self._get_roll_score(roll_index) + self._get_roll_score(roll_index + 1)
+  def get_rolled_rolls(self, start_index, end_index):
+    return list(filter(
+      lambda roll: roll is not None,
+      self._rolls[start_index:end_index + 1]
+    ))
 
-    self._traverse_rolls(
-      strike_fn,
-      spare_fn,
-      normal_fn
-    )
+  def sum_rolled_scores(self, start_index, end_index):
+    sum = 0
+    for i in range(start_index, end_index + 1):
+      sum += self._get_roll_score(i)
+    return sum
 
-    return score
-
-  def frames_data(self):
-    data = []
-    def strike_fn(roll_index):
-      nonlocal data
-      frame_rolls = list(filter(
-        lambda roll: roll is not None,
-        [self.rolls[roll_index]]
-      ))
-      frame_score = None
-      if self.rolls[roll_index + 1] is not None:
-        frame_score = self._get_roll_score(roll_index) + self._get_roll_score(roll_index + 1) + self._get_roll_score(roll_index + 2)
-        if self.rolls[roll_index + 2] is not None:
-          frame_score = self._get_roll_score(roll_index) + self._get_roll_score(roll_index + 1) + self._get_roll_score(roll_index + 2)
-
-      data.append({
-        "rolls": frame_rolls,
-        "score": frame_score
-      })
-
-    def spare_fn(roll_index):
-      nonlocal data
-      frame_rolls = list(filter(
-        lambda roll: roll is not None,
-        [self.rolls[roll_index], self.rolls[roll_index + 1]]
-      ))
-      frame_score = None
-      if len(frame_rolls) == 2 and self.rolls[roll_index + 2] is not None:
-        frame_score = self._get_roll_score(roll_index) + self._get_roll_score(roll_index + 1) + self._get_roll_score(roll_index + 2)
-
-      data.append({
-        "rolls": frame_rolls,
-        "score": frame_score
-      })
-
-    def normal_fn(roll_index):
-      nonlocal data
-      frame_rolls = list(filter(
-        lambda roll: roll is not None,
-        [self.rolls[roll_index], self.rolls[roll_index + 1]]
-      ))
-      data.append({
-        "rolls": frame_rolls,
-        "score": self._get_roll_score(roll_index) + self._get_roll_score(roll_index + 1) if len(frame_rolls) == 2 else None
-      })
-
-    self._traverse_rolls(
-      strike_fn,
-      spare_fn,
-      normal_fn
-    )
-    return data
-
-  def _traverse_rolls(self, strike_fn, spare_fn, normal_fn):
+  def traverse_rolls(self, strike_fn, spare_fn, normal_fn):
     roll_index = 0
     for frame in range(0, 10):
       if self._is_strike(roll_index):
@@ -95,18 +35,90 @@ class Game:
         normal_fn(roll_index)
         roll_index += 2
 
+  def _get_index(self, index):
+    return self._rolls[index]
+
+  def _get_roll_score(self, index):
+    # if len(self.rolls) < index + 1:  # prevent IndexError, should only be possible on the last frame
+    #   return 0
+    if self._get_index(index) is None:  # unrolled
+      return 0
+    return self._get_index(index)
+
   def _is_spare(self, roll_index):
     return (self._get_roll_score(roll_index) + self._get_roll_score(roll_index + 1)) == 10
 
   def _is_strike(self, roll_index):
     return self._get_roll_score(roll_index) == 10
 
-  def _get_roll_score(self, index):
-    if len(self.rolls) < index + 1:  # prevent IndexError, should only be possible on the last frame
-      return 0
-    if self.rolls[index] is None:  # unrolled
-      return 0
-    return self.rolls[index]
+class Game:
+  def __init__(self) -> None:
+    self.rolls = Rolls()
+
+  def roll(self, pins):
+    self.rolls.add(pins)
+
+  def score(self):
+    score = 0
+    def strike_fn(roll_index):
+      nonlocal score
+      score += 10 + self.rolls.sum_rolled_scores(roll_index + 1, roll_index + 2)
+    def spare_fn(roll_index):
+      nonlocal score
+      score += 10 + self.rolls.sum_rolled_scores(roll_index + 2, roll_index + 2)
+    def normal_fn(roll_index):
+      nonlocal score
+      score += self.rolls.sum_rolled_scores(roll_index, roll_index + 1)
+
+    self.rolls.traverse_rolls(
+      strike_fn,
+      spare_fn,
+      normal_fn
+    )
+
+    return score
+
+  def frames_data(self):
+    data = []
+    def strike_fn(roll_index):
+      nonlocal data
+      frame_rolls = self.rolls.get_rolled_rolls(roll_index, roll_index)
+      frame_score = None
+      bonus_score = self.rolls.sum_rolled_scores(roll_index, roll_index + 2)
+      if bonus_score:
+        frame_score = bonus_score
+
+      data.append({
+        "rolls": frame_rolls,
+        "score": frame_score
+      })
+
+    def spare_fn(roll_index):
+      nonlocal data
+      frame_rolls = self.rolls.get_rolled_rolls(roll_index, roll_index + 1)
+      frame_score = None
+      if len(frame_rolls) == 2:
+        frame_score = self.rolls.sum_rolled_scores(roll_index, roll_index + 2)
+
+      data.append({
+        "rolls": frame_rolls,
+        "score": frame_score
+      })
+
+    def normal_fn(roll_index):
+      nonlocal data
+      frame_rolls = self.rolls.get_rolled_rolls(roll_index, roll_index + 1)
+      data.append({
+        "rolls": frame_rolls,
+        "score": self.rolls.sum_rolled_scores(roll_index, roll_index + 1) if len(frame_rolls) == 2 else None
+      })
+
+    self.rolls.traverse_rolls(
+      strike_fn,
+      spare_fn,
+      normal_fn
+    )
+    return data
 
 class TestBowlingGame(unittest.TestCase):
   def setUp(self):
