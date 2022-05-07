@@ -1,5 +1,7 @@
 For "TDD", I delayed creating new objects.
 
 Observations on the current design:
-- The FinalFrame concept is not extracted well, and may need to be considered in multiple functions (for now, only _get_roll_score, but also possibly because I've not fixed the last frame bug)
-- Seems to be leaning towards modularizing code by the function (e.g. scoring, generating data) instead of the "concept". I prefer the latter, but it does feel like there will be some situations where breaking by function works better (e.g. allows for easily adding more "traversal types" a-la a visitor pattern)
+- Leaned towards modularizing code by the function (e.g. scoring, generating data) instead of the "concept", something like the visitor pattern.
+  - The scoring and frame data generation logic turned out to be quite coupled (surprise!) since the FrameData also needs to calculate the score. I could extract the scoring logic such that they're shared of course, but it feels like it might be additional complexity.
+  - That said, all these changes didn't require updating the Game once that was refactored to a visitor-like pattern. And it should be easier to add new traversers? Though I think it wouldn't be too hard to do similarly in the OOP design.
+- As I could compare the design side-by-side, this felt like I was digging myself further into a ditch :( Pretty sure I was subconsciously trying to avoid the same design though, so not sure if I would have refactored the TDD design in a vacuum.

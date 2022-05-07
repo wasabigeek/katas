@@ -10,34 +10,41 @@ class Rolls:
     self._rolls[self.current_roll] = pins
     self.current_roll += 1
 
-  def get_rolled_rolls(self, start_index, end_index):
-    return list(filter(
-      lambda roll: roll is not None,
-      self._rolls[start_index:end_index + 1]
-    ))
-
-  def sum_rolled_scores(self, start_index, end_index):
-    sum = 0
-    for i in range(start_index, end_index + 1):
-      sum += self._get_roll_score(i)
-    return sum
-
   def traverse_rolls(self, traverser):
     roll_index = 0
     for frame in range(0, 9):
       if self._is_strike(roll_index):
-        traverser.strike_fn(roll_index, self)
+        traverser.on_strike_frame(
+          frame_rolls=self._get_rolled(roll_index, roll_index),
+          trailing_rolls=self._get_rolled(roll_index + 1, roll_index + 2)
+        )
         roll_index += 1
       elif self._is_spare(roll_index):
-        traverser.spare_fn(roll_index, self)
+        traverser.on_spare_frame(
+          frame_rolls=self._get_rolled(roll_index, roll_index + 1),
+          trailing_rolls=self._get_rolled(roll_index + 2, roll_index + 3)
+        )
         roll_index += 2
       else:
-        traverser.normal_fn(roll_index, self)
+        traverser.on_normal_frame(
+          frame_rolls=self._get_rolled(roll_index, roll_index + 1),
+          trailing_rolls=self._get_rolled(roll_index + 2, roll_index + 3)
+        )
         roll_index += 2
-    traverser.final_frame_fn(roll_index, self)
+
+    traverser.on_final_frame(
+      frame_rolls=self._get_rolled(roll_index, roll_index + 2),
+      trailing_rolls=[]
+    )
 
   def _get_index(self, index):
     return self._rolls[index]
+
+  def _get_rolled(self, start_index, end_index):
+    return list(filter(
+      lambda roll: roll is not None,
+      self._rolls[start_index:end_index + 1]
+    ))
 
   def _get_roll_score(self, index):
     if len(self._rolls) < index + 1:  # prevent IndexError, should only be possible on the last frame
@@ -56,61 +63,77 @@ class Scorer:
   def __init__(self) -> None:
     self.score = 0
 
-  def strike_fn(self, roll_index, rolls):
-    self.score += 10 + rolls.sum_rolled_scores(roll_index + 1, roll_index + 2)
+  def on_strike_frame(self, frame_rolls, trailing_rolls):
+    self.score += 10
+    for roll in trailing_rolls[0:2]:
+      self.score += roll
 
-  def spare_fn(self, roll_index, rolls):
-    self.score += 10 + rolls.sum_rolled_scores(roll_index + 2, roll_index + 2)
+  def on_spare_frame(self, frame_rolls, trailing_rolls):
+    self.score += 10
+    if len(trailing_rolls) > 0:
+      self.score += trailing_rolls[0]
 
-  def normal_fn(self, roll_index, rolls):
-    self.score += rolls.sum_rolled_scores(roll_index, roll_index + 1)
+  def on_normal_frame(self, frame_rolls, trailing_rolls):
+    for roll in frame_rolls:
+      self.score += roll
 
-  def final_frame_fn(self, roll_index, rolls):
-    self.score += rolls.sum_rolled_scores(roll_index, roll_index + 2)
+  def on_final_frame(self, frame_rolls, trailing_rolls):
+    self.on_normal_frame(frame_rolls, trailing_rolls)
 
 class FrameDataGenerator:
   def __init__(self) -> None:
     self.data = []
 
-  def strike_fn(self, roll_index, rolls):
-    # all this frame information could probably go into Rows e.g.
-    # def strike_fn(self, frame_rolls):
-    #   bonus_score = but this is tricky
-    frame_rolls = rolls.get_rolled_rolls(roll_index, roll_index)
+  def on_strike_frame(self, frame_rolls, trailing_rolls):
     frame_score = None
-    bonus_score = rolls.sum_rolled_scores(roll_index, roll_index + 2)
-    if bonus_score:
-      frame_score = bonus_score
+    if len(trailing_rolls) > 0:
+      frame_score = 10
+      for roll in trailing_rolls[0:2]:
+        frame_score += roll
 
     self.data.append({
       "rolls": frame_rolls,
       "score": frame_score
     })
 
-  def spare_fn(self, roll_index, rolls):
-    frame_rolls = rolls.get_rolled_rolls(roll_index, roll_index + 1)
+  def on_spare_frame(self, frame_rolls, trailing_rolls):
+    frame_score = None
+    if len(trailing_rolls) > 0:
+      frame_score = 10 + trailing_rolls[0]
+
+    self.data.append({
+      "rolls": frame_rolls,
+      "score": frame_score
+    })
+
+  def on_normal_frame(self, frame_rolls, trailing_rolls):
     frame_score = None
     if len(frame_rolls) == 2:
-      frame_score = rolls.sum_rolled_scores(roll_index, roll_index + 2)
+      frame_score = 0
+      for roll in frame_rolls:
+        frame_score += roll
 
     self.data.append({
       "rolls": frame_rolls,
       "score": frame_score
     })
 
-  def normal_fn(self, roll_index, rolls):
-    frame_rolls = rolls.get_rolled_rolls(roll_index, roll_index + 1)
+  def on_final_frame(self, frame_rolls, trailing_rolls):
+    frame_score = None
+    if self._final_frame_is_complete(frame_rolls):
+      frame_score = 0
+      for roll in frame_rolls:
+        frame_score += roll
+
     self.data.append({
       "rolls": frame_rolls,
-      "score": rolls.sum_rolled_scores(roll_index, roll_index + 1) if len(frame_rolls) == 2 else None
+      "score": frame_score
     })
 
-  def final_frame_fn(self, roll_index, rolls):
-    frame_rolls = rolls.get_rolled_rolls(roll_index, roll_index + 2)
-    self.data.append({
-      "rolls": frame_rolls,
-      "score": rolls.sum_rolled_scores(roll_index, roll_index + 2) if len(frame_rolls) >= 2 else None
-    })
+  def _final_frame_is_complete(self, frame_rolls):
+    # strike/spare, or regular completion via 2 rolls
+    return (sum(frame_rolls[0:1]) >= 10 and len(frame_rolls) >= 3) or \
+      len(frame_rolls) == 2
 
 class Game:
   def __init__(self) -> None:
