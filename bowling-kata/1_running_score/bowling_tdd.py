@@ -60,13 +60,22 @@ class Rolls:
     return self._get_roll_score(roll_index) == 10
 
 class Scorer:
+  @classmethod
+  def score_strike_frame(cls, frame_rolls, trailing_rolls):
+    score = None
+    if len(trailing_rolls) > 0:
+      score = 10
+      for roll in trailing_rolls[0:2]:
+        score += roll
+    return score
+
+class ScoreVisitor:
   def __init__(self) -> None:
     self.score = 0
 
   def on_strike_frame(self, frame_rolls, trailing_rolls):
-    self.score += 10
-    for roll in trailing_rolls[0:2]:
-      self.score += roll
+    # Note: score_strike_frame can return None :/
+    self.score += Scorer.score_strike_frame(frame_rolls, trailing_rolls)
 
   def on_spare_frame(self, frame_rolls, trailing_rolls):
     self.score += 10
@@ -80,20 +89,14 @@ class Scorer:
   def on_final_frame(self, frame_rolls, trailing_rolls):
     self.on_normal_frame(frame_rolls, trailing_rolls)
 
-class FrameDataGenerator:
+class FrameDataVisitor:
   def __init__(self) -> None:
     self.data = []
 
   def on_strike_frame(self, frame_rolls, trailing_rolls):
-    frame_score = None
-    if len(trailing_rolls) > 0:
-      frame_score = 10
-      for roll in trailing_rolls[0:2]:
-        frame_score += roll
-
     self.data.append({
       "rolls": frame_rolls,
-      "score": frame_score
+      "score": Scorer.score_strike_frame(frame_rolls, trailing_rolls)
     })
 
   def on_spare_frame(self, frame_rolls, trailing_rolls):
@@ -143,12 +146,12 @@ class Game:
     self.rolls.add(pins)
 
   def score(self):
-    scorer = Scorer()
+    scorer = ScoreVisitor()
     self.rolls.traverse_rolls(scorer)
     return scorer.score
 
   def frames_data(self):
-    data_generator = FrameDataGenerator()
+    data_generator = FrameDataVisitor()
     self.rolls.traverse_rolls(data_generator)
     return data_generator.data
 
