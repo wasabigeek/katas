@@ -59,30 +59,10 @@ class Rolls:
   def _is_strike(self, roll_index):
     return self._get_roll_score(roll_index) == 10
 
-class Scorer:
-  def __init__(self) -> None:
-    self.score = 0
-
-  def on_strike_frame(self, frame_rolls, trailing_rolls):
-    self.score += 10
-    for roll in trailing_rolls[0:2]:
-      self.score += roll
-
-  def on_spare_frame(self, frame_rolls, trailing_rolls):
-    self.score += 10
-    if len(trailing_rolls) > 0:
-      self.score += trailing_rolls[0]
-
-  def on_normal_frame(self, frame_rolls, trailing_rolls):
-    for roll in frame_rolls:
-      self.score += roll
-
-  def on_final_frame(self, frame_rolls, trailing_rolls):
-    self.on_normal_frame(frame_rolls, trailing_rolls)
-
-class FrameDataGenerator:
+class FrameVisitor:
   def __init__(self) -> None:
     self.data = []
+    self.total_score = 0
 
   def on_strike_frame(self, frame_rolls, trailing_rolls):
     frame_score = None
@@ -91,20 +71,14 @@ class FrameDataGenerator:
       for roll in trailing_rolls[0:2]:
         frame_score += roll
 
-    self.data.append({
-      "rolls": frame_rolls,
-      "score": frame_score
-    })
+    self._consolidate_frame(frame_rolls, frame_score)
 
   def on_spare_frame(self, frame_rolls, trailing_rolls):
     frame_score = None
     if len(trailing_rolls) > 0:
       frame_score = 10 + trailing_rolls[0]
 
-    self.data.append({
-      "rolls": frame_rolls,
-      "score": frame_score
-    })
+    self._consolidate_frame(frame_rolls, frame_score)
 
   def on_normal_frame(self, frame_rolls, trailing_rolls):
     frame_score = None
@@ -113,10 +87,7 @@ class FrameDataGenerator:
       for roll in frame_rolls:
         frame_score += roll
 
-    self.data.append({
-      "rolls": frame_rolls,
-      "score": frame_score
-    })
+    self._consolidate_frame(frame_rolls, frame_score)
 
   def on_final_frame(self, frame_rolls, trailing_rolls):
     frame_score = None
@@ -125,15 +96,21 @@ class FrameDataGenerator:
       for roll in frame_rolls:
         frame_score += roll
 
-    self.data.append({
-      "rolls": frame_rolls,
-      "score": frame_score
-    })
+    self._consolidate_frame(frame_rolls, frame_score)
 
   def _final_frame_is_complete(self, frame_rolls):
     # strike/spare, or regular completion via 2 rolls
     return (sum(frame_rolls[0:1]) >= 10 and len(frame_rolls) >= 3) or \
       len(frame_rolls) == 2
+
+  def _consolidate_frame(self, frame_rolls, frame_score):
+    self.data.append({
+      "rolls": frame_rolls,
+      "score": frame_score
+    })
+    if frame_score:
+      self.total_score += frame_score
+
 
 class Game:
   def __init__(self) -> None:
@@ -143,14 +120,14 @@ class Game:
     self.rolls.add(pins)
 
   def score(self):
-    scorer = Scorer()
-    self.rolls.traverse_rolls(scorer)
-    return scorer.score
+    visitor = FrameVisitor()
+    self.rolls.traverse_rolls(visitor)
+    return visitor.total_score
 
   def frames_data(self):
-    data_generator = FrameDataGenerator()
-    self.rolls.traverse_rolls(data_generator)
-    return data_generator.data
+    visitor = FrameVisitor()
+    self.rolls.traverse_rolls(visitor)
+    return visitor.data
 
 class TestBowlingGame(unittest.TestCase):
   def setUp(self):
