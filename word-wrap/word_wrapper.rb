@@ -3,18 +3,16 @@ require 'minitest/autorun'
 def word_wrap(string, col_num)
   lines = []
 
-  counter = 0
-  wrapped = ''
-  string.each_char do |char|
-    wrapped += char
-    counter += 1
-    if counter == col_num
-      lines << wrapped.lstrip
-      wrapped = ''
-      counter = 0
+  pointer = 0
+  last_break_pointer = 0
+  while pointer < (string.size - 1)
+    pointer += 1
+    if (pointer - last_break_pointer) > col_num
+      lines << string[last_break_pointer...pointer].strip
+      last_break_pointer = pointer
     end
   end
-  lines << wrapped.lstrip if wrapped != ''
+  lines << string[last_break_pointer..].strip
 
   lines.join("\n")
 end
