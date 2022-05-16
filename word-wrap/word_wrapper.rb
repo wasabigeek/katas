@@ -1,17 +1,22 @@
 require 'minitest/autorun'
 
 def word_wrap(string, col_num)
+  lines = []
+
   counter = 0
   wrapped = ''
   string.each_char do |char|
     wrapped += char
     counter += 1
     if counter == col_num
-      wrapped += "\n"
+      lines << wrapped
+      wrapped = ''
       counter = 0
     end
   end
-  wrapped
+  lines << wrapped if wrapped != ''
+
+  lines.join("\n")
 end
 
 class WordWrapTest < Minitest::Test
