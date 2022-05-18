@@ -13,8 +13,8 @@ def word_wrap(string, col_num)
     pointer += 1
     if (pointer - last_break_pointer) >= col_num
       # TODO: punctuation?
-      if string[pointer] != ' ' # mid-word
-        if string[pointer + 1] && string[pointer + 1] != ' ' # long word - this is pretty shaky logic
+      if mid_word?(string, index)
+        if long_word?(string, index)
           # break and hyphenate
           lines << string[last_break_pointer...pointer - 1].strip + '-'
           pointer -= 1
@@ -34,6 +34,15 @@ def word_wrap(string, col_num)
   lines << string[last_break_pointer..].strip
 
   lines.join("\n")
+end
+
+def mid_word?(string, index)
+  string[index] != ' '
+end
+
+def long_word?(string, index)
+  # this is pretty shaky logic, should look at the start of the word too?
+  string[index + 1] && string[index + 1] != ' '
 end
 
 class WordWrapTest < Minitest::Test
