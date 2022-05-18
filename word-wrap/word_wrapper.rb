@@ -12,11 +12,19 @@ def word_wrap(string, col_num)
 
     pointer += 1
     if (pointer - last_break_pointer) >= col_num
-      # if mid-word, break at the end of the previous word instead
-      if string[pointer] != ' ' # punctuation? # TODO: exceed length?
-        lines << string[last_break_pointer...last_word_start_pointer].strip
-        last_break_pointer = last_word_start_pointer
-        pointer = last_break_pointer
+      # TODO: punctuation?
+      if string[pointer] != ' ' # mid-word
+        if string[pointer + 1] && string[pointer + 1] != ' ' # long word - this is pretty shaky logic
+          # break and hyphenate
+          lines << string[last_break_pointer...pointer - 1].strip + '-'
+          pointer -= 1
+          last_break_pointer = pointer
+        else
+          # break at the end of the previous word instead
+          lines << string[last_break_pointer...last_word_start_pointer].strip
+          last_break_pointer = last_word_start_pointer
+          pointer = last_break_pointer
+        end
       else
         lines << string[last_break_pointer...pointer].strip
         last_break_pointer = pointer
@@ -45,5 +53,11 @@ class WordWrapTest < Minitest::Test
     string = 'lorem ipsum dolor sit amet'
     wrapped = word_wrap(string, 20)
     assert_equal("lorem ipsum dolor\nsit amet", wrapped)
+  end
+
+  def test_large_words_are_broken_and_hyphenated
+    string = 'loremipsumdolor sit amet'
+    wrapped = word_wrap(string, 10)
+    assert_equal("loremipsu-\nmdolor sit\namet", wrapped)
   end
 end
