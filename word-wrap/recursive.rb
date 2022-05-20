@@ -1,9 +1,20 @@
 require 'minitest/autorun'
 
 def word_wrap(string, col_num)
+  slice_string(string, col_num).join("\n")
 end
 
-class WordWrapTest < Minitest::Test
+def slice_string(string, col_num)
+  return [] if string.nil?
+  return [string] if string.size < col_num
+
+  line = string[0...col_num]
+  remainder = string[col_num..]
+  [line] + slice_string(remainder, col_num)
+end
+
+class WordWrapTest <
+   Minitest::Test
   def test_does_nothing_to_string_within_col_num
     string = 'lorem ipsum'
     wrapped = word_wrap(string, 20)
