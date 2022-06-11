@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require './character'
 
-class CharacterTest < Minitest::Test
+class CharacterDamageAndHealthTest < Minitest::Test
   def test_starting_health
     character = Character.new
     assert_equal 1000, character.health
@@ -49,5 +49,12 @@ class CharacterTest < Minitest::Test
     initial_health = character.health
     character.heal
     assert_equal initial_health, character.health
+  end
+end
+
+class CharacterLevelsTest < Minitest::Test
+  def test_starting_level
+    character = Character.new
+    assert_equal 1, character.level
   end
 end
