@@ -19,7 +19,11 @@ class Character
     return if target == self
 
     damage = 100
-    damage *= 0.5 if target.level - level >= 5
+    if target.level - level >= 5
+      damage *= 0.5
+    elsif target.level - level <= -5
+      damage *= 1.5
+    end
     target.health -= damage
   end
 
