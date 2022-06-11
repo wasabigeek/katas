@@ -6,4 +6,9 @@ class CharacterTest < Minitest::Test
     character = Character.new
     assert_equal 1000, character.health
   end
+
+  def test_starts_alive
+    character = Character.new
+    assert character.alive?
+  end
 end
