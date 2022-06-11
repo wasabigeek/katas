@@ -12,6 +12,8 @@ class Character
   end
 
   def attack(target)
+    return if target == self
+
     target.health -= 100 # waiting for more info before deciding how to encapsulate
   end
 end

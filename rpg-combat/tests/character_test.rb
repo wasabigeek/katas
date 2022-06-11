@@ -12,7 +12,7 @@ class CharacterTest < Minitest::Test
     assert character.alive?
   end
 
-  def test_deal_damage_to_other_characters
+  def test_attack_to_other_characters
     character1 = Character.new
     character2 = Character.new
 
@@ -21,7 +21,7 @@ class CharacterTest < Minitest::Test
     assert_equal character2.health, 900
   end
 
-  def test_deal_damage_till_character_dies
+  def test_attack_till_character_dies
     character1 = Character.new
     character2 = Character.new(health: 100)
 
@@ -29,5 +29,12 @@ class CharacterTest < Minitest::Test
 
     assert_equal character2.health, 0
     refute character2.alive?
+  end
+
+  def test_attack_on_self_does_nothing
+    # I think we shouldn't stop the game if a user mistakenly clicks on themself, for example
+    character = Character.new
+    character.attack(character)
+    assert_equal character.health, Character::STARTING_HEALTH
   end
 end
