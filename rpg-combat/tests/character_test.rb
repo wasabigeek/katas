@@ -43,4 +43,11 @@ class CharacterTest < Minitest::Test
     character.heal
     assert_equal character.health, 200
   end
+
+  def test_heal_does_nothing_when_full_health
+    character = Character.new
+    initial_health = character.health
+    character.heal
+    assert_equal initial_health, character.health
+  end
 end
