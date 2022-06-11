@@ -11,4 +11,13 @@ class CharacterTest < Minitest::Test
     character = Character.new
     assert character.alive?
   end
+
+  def test_deal_damage_to_other_characters
+    character1 = Character.new
+    character2 = Character.new
+
+    character1.attack(character2)
+
+    assert_equal character2.health, 900
+  end
 end
