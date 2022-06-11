@@ -8,7 +8,7 @@ class Character
 
   def initialize(health: nil, level: STARTING_LEVEL)
     @level = level
-    @health = health || max_health(level:)
+    @health = health || max_health # needs level to be set first :(
   end
 
   def alive?
@@ -24,9 +24,15 @@ class Character
   end
 
   def heal
-    return if health >= max_health(level:)
+    return if health >= max_health
 
     self.health += 100
+  end
+
+  def max_health
+    return STARTING_HEALTH + 500 if level >= 6
+
+    STARTING_HEALTH
   end
 
   protected
@@ -34,12 +40,6 @@ class Character
   attr_writer :health
 
   private
-
-  def max_health(level:)
-    return STARTING_HEALTH + 500 if level >= 6
-
-    STARTING_HEALTH
-  end
 
   def level_difference_damage_modifier(target:)
     if target.level - level <= -5
