@@ -23,6 +23,10 @@ class Character
     target.health -= damage
   end
 
+  def faction
+    nil
+  end
+
   def heal
     return unless alive?
     return if health >= max_health

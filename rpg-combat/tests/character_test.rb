@@ -102,3 +102,10 @@ class CharacterLevelsTest < Minitest::Test
     assert_equal 1500, character.health
   end
 end
+
+class CharacterFactionsTest < Minitest::Test
+  def test_starting_faction_is_nil
+    character = Character.new
+    assert_nil character.faction
+  end
+end
