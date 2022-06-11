@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Character
   STARTING_HEALTH = 1000
   STARTING_LEVEL = 1
