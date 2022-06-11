@@ -1,9 +1,14 @@
 class Character
-  def health
-    1000
+  STARTING_HEALTH = 1000
+
+  attr_reader :health
+
+  def initialize
+    @health = STARTING_HEALTH
+    @alive = true
   end
 
   def alive?
-    true
+    @alive
   end
 end
