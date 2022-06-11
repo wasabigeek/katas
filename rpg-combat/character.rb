@@ -22,7 +22,7 @@ class Character
   end
 
   def heal
-    return if health >= STARTING_HEALTH
+    return if health >= max_health(level:)
 
     self.health += 100
   end

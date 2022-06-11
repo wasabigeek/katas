@@ -46,6 +46,15 @@ class CharacterDamageAndHealthTest < Minitest::Test
     assert_equal character.health, 200
   end
 
+  def test_heal_when_damaged_accounts_for_max_health
+    character = Character.new(level: 6, health: 1400)
+    character.heal
+    assert_equal 1500, character.health
+
+    character.heal
+    assert_equal 1500, character.health
+  end
+
   def test_heal_does_nothing_when_full_health
     character = Character.new
     initial_health = character.health
@@ -60,7 +69,7 @@ class CharacterLevelsTest < Minitest::Test
     assert_equal 1, character.level
   end
 
-  def test_health_increases_at_level_6
+  def test_starting_health_increases_at_level6
     character = Character.new(level: 6)
     assert_equal 1500, character.health
   end
