@@ -19,11 +19,7 @@ class Character
     return if target == self
 
     damage = 100
-    if target.level - level >= 5
-      damage *= 0.5
-    elsif target.level - level <= -5
-      damage *= 1.5
-    end
+    damage *= level_difference_damage_modifier(target:)
     target.health -= damage
   end
 
@@ -43,5 +39,15 @@ class Character
     return STARTING_HEALTH + 500 if level >= 6
 
     STARTING_HEALTH
+  end
+
+  def level_difference_damage_modifier(target:)
+    if target.level - level <= -5
+      1.5
+    elsif target.level - level >= 5
+      0.5
+    else
+      1
+    end
   end
 end

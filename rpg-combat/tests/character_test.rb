@@ -42,11 +42,18 @@ class CharacterDamageAndHealthTest < Minitest::Test
 
   def test_attack_does_less_damage_if_target_is_5_levels_higher
     character1 = Character.new
-    character2 = Character.new(level: 6)
+    character2 = Character.new(level: 5)
+    character3 = Character.new(level: 6)
+    character4 = Character.new(level: 7)
 
     character1.attack(character2)
+    assert_equal character2.health, 900
 
-    assert_equal character2.health, 1450 # TODO: somewhat magic number
+    character1.attack(character3)
+    assert_equal character3.health, 1450
+
+    character1.attack(character4)
+    assert_equal character4.health, 1450
   end
 
   def test_attack_does_more_damage_if_target_is_5_levels_lower
