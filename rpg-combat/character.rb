@@ -2,8 +2,7 @@ class Character
   STARTING_HEALTH = 1000
   STARTING_LEVEL = 1
 
-  attr_accessor :health
-  attr_reader :level
+  attr_reader :health, :level
 
   def initialize(health: STARTING_HEALTH, level: STARTING_LEVEL)
     @health = health
@@ -25,4 +24,8 @@ class Character
 
     self.health += 100
   end
+
+  protected
+
+  attr_writer :health
 end
