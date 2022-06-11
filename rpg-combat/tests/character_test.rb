@@ -59,4 +59,9 @@ class CharacterLevelsTest < Minitest::Test
     character = Character.new
     assert_equal 1, character.level
   end
+
+  def test_health_increases_at_level_6
+    character = Character.new(level: 6)
+    assert_equal 1500, character.health
+  end
 end

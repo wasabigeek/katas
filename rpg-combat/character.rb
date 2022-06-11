@@ -6,9 +6,9 @@ class Character
 
   attr_reader :health, :level
 
-  def initialize(health: STARTING_HEALTH, level: STARTING_LEVEL)
-    @health = health
+  def initialize(health: nil, level: STARTING_LEVEL)
     @level = level
+    @health = health || max_health(level:)
   end
 
   def alive?
@@ -30,4 +30,12 @@ class Character
   protected
 
   attr_writer :health
+
+  private
+
+  def max_health(level:)
+    return STARTING_HEALTH + 500 if level >= 6
+
+    STARTING_HEALTH
+  end
 end
