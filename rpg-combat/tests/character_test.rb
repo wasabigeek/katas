@@ -37,4 +37,10 @@ class CharacterTest < Minitest::Test
     character.attack(character)
     assert_equal character.health, Character::STARTING_HEALTH
   end
+
+  def test_heal_when_damaged
+    character = Character.new(health: 100)
+    character.heal
+    assert_equal character.health, 200
+  end
 end
