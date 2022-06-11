@@ -18,7 +18,9 @@ class Character
   def attack(target)
     return if target == self
 
-    target.health -= 100 # waiting for more info before deciding how to encapsulate
+    damage = 100
+    damage *= 0.5 if target.level - level >= 5
+    target.health -= damage
   end
 
   def heal

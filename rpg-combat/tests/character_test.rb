@@ -40,6 +40,15 @@ class CharacterDamageAndHealthTest < Minitest::Test
     assert_equal character.health, Character::STARTING_HEALTH
   end
 
+  def test_attack_does_less_damage_if_target_is_5_levels_higher
+    character1 = Character.new
+    character2 = Character.new(level: 6)
+
+    character1.attack(character2)
+
+    assert_equal character2.health, 1450 # TODO: somewhat magic number
+  end
+
   def test_heal_when_damaged
     character = Character.new(health: 100)
     character.heal
