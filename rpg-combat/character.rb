@@ -34,6 +34,10 @@ class Character
     self.health += 100
   end
 
+  def join(faction)
+    faction.accept_join(self)
+  end
+
   def max_health
     return STARTING_HEALTH + 500 if level >= 6
 

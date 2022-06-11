@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'minitest/autorun'
+require 'minitest/mock'
 require './character'
 
 class CharacterDamageAndHealthTest < Minitest::Test
@@ -107,5 +108,13 @@ class CharacterFactionsTest < Minitest::Test
   def test_starting_faction_is_nil
     character = Character.new
     assert_nil character.faction
+  end
+
+  def test_joining_a_faction
+    character = Character.new
+    faction_mock = Minitest::Mock.new
+    faction_mock.expect(:accept_join, true, [character])
+    character.join(faction_mock)
+    faction_mock.verify
   end
 end
