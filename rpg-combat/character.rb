@@ -3,13 +3,12 @@ class Character
 
   attr_accessor :health
 
-  def initialize
-    @health = STARTING_HEALTH
-    @alive = true
+  def initialize(health: STARTING_HEALTH)
+    @health = health
   end
 
   def alive?
-    @alive
+    health > 0
   end
 
   def attack(target)

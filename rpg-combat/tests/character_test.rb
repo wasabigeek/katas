@@ -20,4 +20,14 @@ class CharacterTest < Minitest::Test
 
     assert_equal character2.health, 900
   end
+
+  def test_deal_damage_till_character_dies
+    character1 = Character.new
+    character2 = Character.new(health: 100)
+
+    character1.attack(character2)
+
+    assert_equal character2.health, 0
+    refute character2.alive?
+  end
 end
