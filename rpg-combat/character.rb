@@ -24,6 +24,7 @@ class Character
   end
 
   def heal
+    return unless alive?
     return if health >= max_health
 
     self.health += 100

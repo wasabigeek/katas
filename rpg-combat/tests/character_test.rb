@@ -83,6 +83,12 @@ class CharacterDamageAndHealthTest < Minitest::Test
     character.heal
     assert_equal initial_health, character.health
   end
+
+  def test_heal_does_nothing_when_dead
+    character = Character.new(health: 0)
+    character.heal
+    assert_equal 0, character.health
+  end
 end
 
 class CharacterLevelsTest < Minitest::Test
