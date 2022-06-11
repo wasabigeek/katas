@@ -43,9 +43,10 @@ class Character
   private
 
   def level_difference_damage_modifier(target:)
-    if target.level - level <= -5
+    level_difference = level - target.level
+    if level_difference >= 5
       1.5
-    elsif target.level - level >= 5
+    elsif level_difference <= -5
       0.5
     else
       1
