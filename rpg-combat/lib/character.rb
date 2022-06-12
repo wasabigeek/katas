@@ -24,7 +24,7 @@ class Character
     damage = 100
     damage *= faction_damage_modifier(target:)
     damage *= level_difference_damage_modifier(target:)
-    target.health -= damage
+    target.receive_damage(damage)
   end
 
   def factions
@@ -57,22 +57,18 @@ class Character
   end
 
   def receive_damage(amount)
-    self.health -= [amount, health].min
+    @health -= [amount, health].min
   end
 
   def receive_healing(amount)
     return unless alive?
 
-    self.health += [amount, healable_amount].min
+    @health += [amount, healable_amount].min
   end
 
   def healable_amount
     max_health - health
   end
-
-  protected
-
-  attr_writer :health
 
   private
 
