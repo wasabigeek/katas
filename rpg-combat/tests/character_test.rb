@@ -106,6 +106,23 @@ class CharacterDamageAndHealthTest < Minitest::Test
     assert_equal 200, character2.health
   end
 
+  def test_heal_ally_does_nothing_when_self_is_dead
+    _faction, character1, character2 = create_allies(
+      character1_options: { health: 100 },
+      character2_options: { health: 0 }
+    )
+    character2.heal(character1)
+    assert_equal 100, character1.health
+  end
+
+  def test_heal_ally_does_nothing_when_ally_is_dead
+    _faction, character1, character2 = create_allies(
+      character2_options: { health: 0 }
+    )
+    character1.heal(character2)
+    assert_equal 0, character2.health
+  end
+
   def test_heal_non_ally
     character1 = Character.new
     character2 = Character.new(health: 100)
@@ -116,9 +133,9 @@ class CharacterDamageAndHealthTest < Minitest::Test
 
   private
 
-  def create_allies(character2_options: {})
+  def create_allies(character1_options: {}, character2_options: {})
     faction = Faction.new
-    character1 = Character.new
+    character1 = Character.new(**character1_options)
     character2 = Character.new(**character2_options)
     character1.join(faction)
     character2.join(faction)

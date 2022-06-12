@@ -31,7 +31,7 @@ class Character
   end
 
   def heal(target = self)
-    return unless target.alive?
+    return unless alive? && target.alive?
     return if target.health >= target.max_health
     return if target != self && !Faction.allies?(self, target)
 
