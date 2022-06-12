@@ -61,7 +61,7 @@ class Character
     self.health += amount
   end
 
-  def received_damage
+  def healable_amount
     max_health - health
   end
 
