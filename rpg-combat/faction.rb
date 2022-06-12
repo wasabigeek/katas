@@ -9,6 +9,10 @@ class Faction
     @@character_map[character]
   end
 
+  def self.allies?(character1, character2)
+    (self.for(character1) & self.for(character2)).any?
+  end
+
   def handle_join(character)
     @@character_map[character] << self
   end

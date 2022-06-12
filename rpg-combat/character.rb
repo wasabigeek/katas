@@ -58,7 +58,7 @@ class Character
   private
 
   def faction_damage_modifier(target:)
-    if (factions & target.factions).any?
+    if Faction.allies?(self, target)
       0
     else
       1
