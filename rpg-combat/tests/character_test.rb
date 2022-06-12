@@ -105,8 +105,8 @@ class CharacterLevelsTest < Minitest::Test
 end
 
 class CharacterFactionsTest < Minitest::Test
-  def test_starting_faction_is_nil
+  def test_starting_factions_is_empty
     character = Character.new
-    assert_nil character.faction
+    assert character.factions.empty?
   end
 end
