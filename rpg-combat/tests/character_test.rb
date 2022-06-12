@@ -63,6 +63,19 @@ class CharacterDamageAndHealthTest < Minitest::Test
     assert_equal character2.health, 850
   end
 
+  def test_attack_on_ally_does_nothing
+    faction = Faction.new
+    character1 = Character.new
+    character2 = Character.new
+    character1.join(faction)
+    character2.join(faction)
+
+    character1.attack(character2)
+
+    damage = character2.max_health - character2.health
+    assert_equal 0, damage
+  end
+
   def test_heal_when_damaged
     character = Character.new(health: 100)
     character.heal

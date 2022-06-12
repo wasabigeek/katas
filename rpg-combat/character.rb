@@ -21,6 +21,7 @@ class Character
     return if target == self
 
     damage = 100
+    damage *= faction_damage_modifier(target:)
     damage *= level_difference_damage_modifier(target:)
     target.health -= damage
   end
@@ -55,6 +56,14 @@ class Character
   attr_writer :health
 
   private
+
+  def faction_damage_modifier(target:)
+    if (factions & target.factions).any?
+      0
+    else
+      1
+    end
+  end
 
   def level_difference_damage_modifier(target:)
     level_difference = level - target.level
