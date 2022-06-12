@@ -30,11 +30,12 @@ class Character
     Faction.for(self)
   end
 
-  def heal(character = self)
-    return unless character.alive?
-    return if character.health >= character.max_health
+  def heal(target = self)
+    return unless target.alive?
+    return if target.health >= target.max_health
+    return if target != self && !Faction.allies?(self, target)
 
-    character.health += 100
+    target.health += 100
   end
 
   def join(faction)

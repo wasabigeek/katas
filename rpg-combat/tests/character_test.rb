@@ -107,6 +107,11 @@ class CharacterDamageAndHealthTest < Minitest::Test
   end
 
   def test_heal_non_ally
+    character1 = Character.new
+    character2 = Character.new(health: 100)
+    character1.heal(character2)
+
+    assert_equal 100, character2.health
   end
 
   private
