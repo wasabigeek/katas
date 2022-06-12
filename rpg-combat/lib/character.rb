@@ -57,6 +57,7 @@ class Character
   end
 
   def receive_damage(amount)
+    self.health -= [amount, health].min
   end
 
   def receive_healing(amount)
