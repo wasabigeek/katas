@@ -57,6 +57,10 @@ class Character
     STARTING_HEALTH
   end
 
+  def receive_healing(amount)
+    self.health += amount
+  end
+
   protected
 
   attr_writer :health
