@@ -18,6 +18,7 @@ class Character
   end
 
   def attack(target)
+    # TODO: account for death?
     return if target == self
 
     damage = 100
@@ -36,6 +37,10 @@ class Character
     return if target != self && !Faction.allies?(self, target)
 
     target.health += 100
+  end
+
+  def use(magical_object, target: self)
+    magical_object.call(user: self, target:)
   end
 
   def join(faction)
