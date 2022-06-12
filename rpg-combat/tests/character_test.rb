@@ -64,25 +64,20 @@ class CharacterDamageAndHealthTest < Minitest::Test
   end
 
   def test_attack_on_ally_does_nothing
-    faction = Faction.new
-    character1 = Character.new
-    character2 = Character.new
-    character1.join(faction)
-    character2.join(faction)
-
+    _faction, character1, character2 = create_allies
     character1.attack(character2)
 
     damage = character2.max_health - character2.health
     assert_equal 0, damage
   end
 
-  def test_heal_when_damaged
+  def test_heal_self_when_damaged
     character = Character.new(health: 100)
     character.heal
     assert_equal character.health, 200
   end
 
-  def test_heal_when_damaged_accounts_for_max_health
+  def test_heal_self_when_damaged_accounts_for_max_health
     character = Character.new(level: 6, health: 1400)
     character.heal
     assert_equal 1500, character.health
@@ -91,17 +86,39 @@ class CharacterDamageAndHealthTest < Minitest::Test
     assert_equal 1500, character.health
   end
 
-  def test_heal_does_nothing_when_full_health
+  def test_heal_self_does_nothing_when_full_health
     character = Character.new
     initial_health = character.health
     character.heal
     assert_equal initial_health, character.health
   end
 
-  def test_heal_does_nothing_when_dead
+  def test_heal_self_does_nothing_when_dead
     character = Character.new(health: 0)
     character.heal
     assert_equal 0, character.health
+  end
+
+  def test_heal_ally
+    _faction, character1, character2 = create_allies(character2_options: { health: 100 })
+    character1.heal(character2)
+
+    assert_equal 200, character2.health
+  end
+
+  def test_heal_non_ally
+  end
+
+  private
+
+  def create_allies(character2_options: {})
+    faction = Faction.new
+    character1 = Character.new
+    character2 = Character.new(**character2_options)
+    character1.join(faction)
+    character2.join(faction)
+
+    [faction, character1, character2]
   end
 end
 
