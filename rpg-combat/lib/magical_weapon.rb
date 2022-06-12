@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-class MagicalWeapon
-  attr_reader :health
+require_relative './magical_object'
 
+class MagicalWeapon < MagicalObject
   def initialize(health:, damage:)
-    @health = health
     @damage = damage
+    super(health:)
   end
 
   def use(target:, **)
@@ -13,9 +13,5 @@ class MagicalWeapon
 
     target.receive_damage(@damage)
     @health -= 1
-  end
-
-  def destroyed?
-    @health <= 0
   end
 end

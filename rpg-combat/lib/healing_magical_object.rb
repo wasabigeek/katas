@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-class HealingMagicalObject
-  attr_reader :health
+require_relative './magical_object'
 
+class HealingMagicalObject < MagicalObject
   def initialize(health: 200)
-    @health = health
+    super(health:)
   end
 
   def use(user:, **)
@@ -14,9 +14,5 @@ class HealingMagicalObject
     user.receive_healing(healed_amount)
 
     @health -= healed_amount
-  end
-
-  def destroyed?
-    @health <= 0
   end
 end
