@@ -181,3 +181,11 @@ class CharacterUseObjectTest < Minitest::Test
     object_mock.verify
   end
 end
+
+class CharacterLevelUpTest < Minitest::Test
+  def test_level_up_if_level_1_after_receiving_1000_damage
+    character = Character.new(health: 1100, level: 1)
+    character.receive_damage(1000)
+    assert_equal 2, character.level
+  end
+end

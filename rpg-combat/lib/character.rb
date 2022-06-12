@@ -58,6 +58,8 @@ class Character
 
   def receive_damage(amount)
     @health -= [amount, health].min
+
+    @level += 1 if amount == 1000
   end
 
   def receive_healing(amount)
