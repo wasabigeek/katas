@@ -7,3 +7,5 @@ source "https://rubygems.org"
 gem "rubocop-lsp", "~> 0.1.6", :group => :development
 
 gem "minitest", "~> 5.15", :groups => [:development, :test]
+
+gem "rake", "~> 13.0", :group => :test
