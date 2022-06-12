@@ -14,4 +14,10 @@ class MagicalObject
   def destroyed?
     @health <= 0
   end
+
+  private
+
+  def not_destroyed
+    yield unless destroyed?
+  end
 end

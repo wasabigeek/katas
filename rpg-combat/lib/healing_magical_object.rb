@@ -8,11 +8,11 @@ class HealingMagicalObject < MagicalObject
   end
 
   def use(user:, **)
-    return if destroyed?
+    not_destroyed do
+      healed_amount = [health, user.healable_amount].min
+      user.receive_healing(healed_amount)
 
-    healed_amount = [health, user.healable_amount].min
-    user.receive_healing(healed_amount)
-
-    @health -= healed_amount
+      @health -= healed_amount
+    end
   end
 end

@@ -9,9 +9,9 @@ class MagicalWeapon < MagicalObject
   end
 
   def use(target:, **)
-    return if destroyed?
-
-    target.receive_damage(@damage)
-    @health -= 1
+    not_destroyed do
+      target.receive_damage(@damage)
+      @health -= 1
+    end
   end
 end
