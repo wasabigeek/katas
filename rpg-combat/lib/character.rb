@@ -39,7 +39,7 @@ class Character
   end
 
   def use(magical_object, target: self)
-    magical_object.call(user: self, target:)
+    magical_object.use(user: self, target:)
   end
 
   def join(faction)
@@ -54,6 +54,9 @@ class Character
     return STARTING_HEALTH + 500 if level >= 6
 
     STARTING_HEALTH
+  end
+
+  def receive_damage(amount)
   end
 
   def receive_healing(amount)

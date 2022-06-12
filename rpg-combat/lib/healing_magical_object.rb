@@ -7,7 +7,7 @@ class HealingMagicalObject
     @health = health
   end
 
-  def call(user:, **)
+  def use(user:, **)
     return if destroyed?
 
     healed_amount = [health, user.healable_amount].min

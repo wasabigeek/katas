@@ -10,7 +10,7 @@ class HealingMagicalObjectTest < Minitest::Test
     character_mock = Minitest::Mock.new
     character_mock.expect(:healable_amount, 100)
     character_mock.expect(:receive_healing, true, [100])
-    object.call(user: character_mock)
+    object.use(user: character_mock)
     character_mock.verify
   end
 
@@ -19,7 +19,7 @@ class HealingMagicalObjectTest < Minitest::Test
     character_mock = Minitest::Mock.new
     character_mock.expect(:healable_amount, 200)
     character_mock.expect(:receive_healing, true, [100])
-    object.call(user: character_mock)
+    object.use(user: character_mock)
     character_mock.verify
   end
 
@@ -28,7 +28,7 @@ class HealingMagicalObjectTest < Minitest::Test
     character_mock = Minitest::Mock.new
     character_mock.expect(:healable_amount, 50)
     character_mock.expect(:receive_healing, true, [50])
-    object.call(user: character_mock)
+    object.use(user: character_mock)
 
     assert_equal 50, object.health
   end
@@ -44,7 +44,7 @@ class HealingMagicalObjectTest < Minitest::Test
   def test_call_does_nothing_when_object_is_destroyed
     object = HealingMagicalObject.new(health: 0)
     character_mock = Minitest::Mock.new
-    object.call(user: character_mock)
+    object.use(user: character_mock)
     character_mock.verify
   end
 end

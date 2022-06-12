@@ -9,7 +9,7 @@ class MagicalWeaponTest < Minitest::Test
     object = MagicalWeapon.new(health: 10, damage: 200)
     character_mock = Minitest::Mock.new
     character_mock.expect(:receive_damage, true, [200])
-    object.call(user: nil, target: character_mock)
+    object.use(user: nil, target: character_mock)
     character_mock.verify
   end
 
@@ -17,7 +17,7 @@ class MagicalWeaponTest < Minitest::Test
     object = MagicalWeapon.new(health: 10, damage: 200)
     character_mock = Minitest::Mock.new
     character_mock.expect(:receive_damage, true, [200])
-    object.call(user: nil, target: character_mock)
+    object.use(user: nil, target: character_mock)
 
     assert_equal 9, object.health
   end
@@ -33,7 +33,7 @@ class MagicalWeaponTest < Minitest::Test
   def test_call_does_nothing_when_object_is_destroyed
     object = MagicalWeapon.new(health: 0, damage: 1)
     character_mock = Minitest::Mock.new
-    object.call(user: nil, target: character_mock)
+    object.use(user: nil, target: character_mock)
     character_mock.verify
   end
 end

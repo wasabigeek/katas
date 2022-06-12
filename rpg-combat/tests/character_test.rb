@@ -167,7 +167,7 @@ class CharacterUseObjectTest < Minitest::Test
   def test_use_on_self
     character = Character.new
     object_mock = Minitest::Mock.new
-    object_mock.expect(:call, true, [{ user: character, target: character }])
+    object_mock.expect(:use, true, [{ user: character, target: character }])
     character.use(object_mock)
     object_mock.verify
   end
@@ -176,7 +176,7 @@ class CharacterUseObjectTest < Minitest::Test
     character = Character.new
     character2 = Character.new
     object_mock = Minitest::Mock.new
-    object_mock.expect(:call, true, [{ user: character, target: character2 }])
+    object_mock.expect(:use, true, [{ user: character, target: character2 }])
     character.use(object_mock, target: character2)
     object_mock.verify
   end

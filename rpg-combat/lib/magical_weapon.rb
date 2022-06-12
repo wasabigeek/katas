@@ -8,7 +8,7 @@ class MagicalWeapon
     @damage = damage
   end
 
-  def call(target:, **)
+  def use(target:, **)
     return if destroyed?
 
     target.receive_damage(@damage)
