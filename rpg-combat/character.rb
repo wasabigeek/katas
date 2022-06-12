@@ -32,11 +32,10 @@ class Character
   end
 
   def heal(target = self)
-    return unless alive? && target.alive?
-    return if target.health >= target.max_health
+    return unless alive?
     return if target != self && !Faction.allies?(self, target)
 
-    target.health += 100
+    target.receive_healing(100)
   end
 
   def use(magical_object, target: self)
@@ -58,7 +57,9 @@ class Character
   end
 
   def receive_healing(amount)
-    self.health += amount
+    return unless alive?
+
+    self.health += [amount, healable_amount].min
   end
 
   def healable_amount
