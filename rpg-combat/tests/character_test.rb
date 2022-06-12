@@ -2,7 +2,7 @@
 
 require 'minitest/autorun'
 require 'minitest/mock'
-require './character'
+require 'character'
 
 class CharacterDamageAndHealthTest < Minitest::Test
   def test_starting_health

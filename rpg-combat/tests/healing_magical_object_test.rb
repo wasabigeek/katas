@@ -2,7 +2,7 @@
 
 require 'minitest/autorun'
 require 'minitest/mock'
-require_relative '../healing_magical_object'
+require 'healing_magical_object'
 
 class HealingMagicalObjectTest < Minitest::Test
   def test_call_triggers_healing_on_user_up_to_damage

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'minitest/autorun'
-require_relative '../character'
-require_relative '../faction'
-require_relative '../healing_magical_object'
+require 'character'
+require 'faction'
+require 'healing_magical_object'
 
 class IntegrationTest < Minitest::Test
   def test_faction_joining_and_leaving
