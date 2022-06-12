@@ -23,5 +23,7 @@ class IntegrationTest < Minitest::Test
     healing_object = HealingMagicalObject.new(health: 150)
     character.use(healing_object)
     assert_equal character.health, 950
+
+    # assert healing_object.destroyed?
   end
 end

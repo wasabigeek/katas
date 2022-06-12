@@ -61,6 +61,10 @@ class Character
     self.health += amount
   end
 
+  def received_damage
+    max_health - health
+  end
+
   protected
 
   attr_writer :health

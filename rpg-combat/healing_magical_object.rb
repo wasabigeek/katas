@@ -6,6 +6,6 @@ class HealingMagicalObject
   end
 
   def call(user:, **)
-    user.receive_healing(@health)
+    user.receive_healing([@health, user.received_damage].min)
   end
 end
