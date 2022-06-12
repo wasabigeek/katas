@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 require 'minitest/autorun'
-require './character'
-require './faction'
+require_relative '../character'
+require_relative '../faction'
+require_relative '../healing_magical_object'
 
 class IntegrationTest < Minitest::Test
   def test_faction_joining_and_leaving
@@ -15,5 +16,12 @@ class IntegrationTest < Minitest::Test
 
     character.leave(faction)
     assert character.factions.empty?
+  end
+
+  def test_healing_magical_object_usage
+    character = Character.new(health: 800)
+    healing_object = HealingMagicalObject.new
+    character.use(healing_object)
+    assert_equal character.health, 1000
   end
 end
