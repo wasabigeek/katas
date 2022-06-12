@@ -32,4 +32,19 @@ class HealingMagicalObjectTest < Minitest::Test
 
     assert_equal 50, object.health
   end
+
+  def test_destroyed_at_zero_health
+    object = HealingMagicalObject.new
+    refute object.destroyed?
+
+    object2 = HealingMagicalObject.new(health: 0)
+    assert object2.destroyed?
+  end
+
+  def test_call_does_nothing_when_object_is_destroyed
+    object = HealingMagicalObject.new(health: 0)
+    character_mock = Minitest::Mock.new
+    object.call(user: character_mock)
+    character_mock.verify
+  end
 end
