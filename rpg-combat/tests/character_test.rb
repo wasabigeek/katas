@@ -113,7 +113,7 @@ class CharacterFactionsTest < Minitest::Test
   def test_joining_a_faction
     character = Character.new
     faction_mock = Minitest::Mock.new
-    faction_mock.expect(:accept_join, true, [character])
+    faction_mock.expect(:handle_join, true, [character])
     character.join(faction_mock)
     faction_mock.verify
   end

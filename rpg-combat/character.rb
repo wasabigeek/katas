@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative './faction'
+
 class Character
   STARTING_HEALTH = 1000
   STARTING_LEVEL = 1
@@ -24,7 +26,7 @@ class Character
   end
 
   def faction
-    nil
+    Faction.for(self)
   end
 
   def heal
@@ -35,7 +37,7 @@ class Character
   end
 
   def join(faction)
-    faction.accept_join(self)
+    faction.handle_join(self)
   end
 
   def max_health
