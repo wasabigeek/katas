@@ -195,4 +195,13 @@ class CharacterLevelUpTest < Minitest::Test
     character.receive_damage(500)
     assert_equal 2, character.level
   end
+
+  def test_level_2_character_levels_up_after_receiving_2000_damage
+    character = Character.new(health: 1100, level: 2)
+    character.receive_damage(1000)
+    assert_equal 2, character.level
+    character.receive_healing(1000)
+    character.receive_damage(1000)
+    assert_equal 3, character.level
+  end
 end
