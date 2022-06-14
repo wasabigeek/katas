@@ -183,9 +183,16 @@ class CharacterUseObjectTest < Minitest::Test
 end
 
 class CharacterLevelUpTest < Minitest::Test
-  def test_level_up_if_level_1_after_receiving_1000_damage
+  def test_level_1_character_does_not_level_up_if_damage_less_than_1000
     character = Character.new(health: 1100, level: 1)
-    character.receive_damage(1000)
+    character.receive_damage(500)
+    assert_equal 1, character.level
+  end
+
+  def test_level_1_character_levels_up_after_receiving_1000_damage
+    character = Character.new(health: 1100, level: 1)
+    character.receive_damage(500)
+    character.receive_damage(500)
     assert_equal 2, character.level
   end
 end

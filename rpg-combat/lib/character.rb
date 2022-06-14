@@ -11,6 +11,8 @@ class Character
   def initialize(health: nil, level: STARTING_LEVEL)
     @level = level
     @health = health || max_health # needs level to be set first :(
+
+    @cumulative_damage = 0
   end
 
   def alive?
@@ -57,9 +59,11 @@ class Character
   end
 
   def receive_damage(amount)
-    @health -= [amount, health].min
+    damage = [amount, health].min
+    @health -= damage
+    @cumulative_damage += damage
 
-    @level += 1 if amount == 1000
+    @level += 1 if @cumulative_damage == 1000
   end
 
   def receive_healing(amount)
