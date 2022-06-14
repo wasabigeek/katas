@@ -6,6 +6,7 @@ module Characters
   class Level
     STARTING = 1
     STARTING_HEALTH = 1000
+    MAX_LEVEL = 10
 
     def initialize(current: STARTING)
       @current = current
@@ -19,6 +20,7 @@ module Characters
 
     def level_up(character)
       return unless character.alive?
+      return if @current >= MAX_LEVEL
 
       # TODO: potentially will not work if character jumps multiple levels
       @current += 1 if character.cumulative_damage >= @current * 1000

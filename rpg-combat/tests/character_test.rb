@@ -238,4 +238,19 @@ class CharacterLevelUpTest < Minitest::Test
     6.times { character.join(Faction.new) }
     assert_equal 3, character.level
   end
+
+  def test_character_cannot_go_beyond_level_10
+    character = Character.new(level: 1)
+    30.times { character.join(Faction.new) }
+    assert_equal 10, character.level
+  end
+
+  # TODO: This seems debatable
+  # def test_character_levels_up_correctly_with_multiple_objectives
+  #   character = Character.new(health: 1100, level: 1)
+  #   faction = Faction.new
+  #   3.times { character.join(faction) } # wrong in current logic, needs to be 6
+  #   character.receive_damage(1000)
+  #   assert_equal 3, character.level
+  # end
 end
