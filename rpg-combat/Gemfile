@@ -9,3 +9,5 @@ gem "rubocop-lsp", "~> 0.1.6", :group => :development
 gem "minitest", "~> 5.15", :groups => [:development, :test]
 
 gem "rake", "~> 13.0", :group => :test
+
+gem "byebug", "~> 11.1", :groups => [:development, :test]
