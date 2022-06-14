@@ -24,7 +24,7 @@ module Characters
 
       # TODO: potentially will not work if character jumps multiple levels
       @current += 1 if character.cumulative_damage >= @current * 1000
-      @current += 1 if character.cumulative_factions.size >= @current * 3
+      @current += 1 if Faction.historical_joins_count(character) >= @current * 3
     end
 
     def to_i
@@ -37,14 +37,13 @@ class Character
   STARTING_HEALTH = 1000
   STARTING_LEVEL = 1
 
-  attr_reader :health, :cumulative_damage, :cumulative_factions
+  attr_reader :health, :cumulative_damage
 
   def initialize(health: nil, level: STARTING_LEVEL)
     @_level = Characters::Level.new(current: level)
     @health = health || max_health # needs level to be set first :(
 
     @cumulative_damage = 0
-    @cumulative_factions = Set.new
   end
 
   def alive?
@@ -82,7 +81,6 @@ class Character
 
   def join(faction)
     faction.handle_join(self)
-    @cumulative_factions << faction
     @_level.level_up(self)
   end
 
