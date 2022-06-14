@@ -2,14 +2,39 @@
 
 require_relative './faction'
 
+module Characters
+  class Level
+    STARTING = 1
+    STARTING_HEALTH = 1000
+
+    def initialize(current: STARTING)
+      @current = current
+    end
+
+    def max_health
+      return STARTING_HEALTH + 500 if @current >= 6
+
+      STARTING_HEALTH
+    end
+
+    def level_up(character)
+      @current += 1 if character.alive? && character.cumulative_damage >= @current * 1000
+    end
+
+    def to_i
+      @current
+    end
+  end
+end
+
 class Character
   STARTING_HEALTH = 1000
   STARTING_LEVEL = 1
 
-  attr_reader :health, :level
+  attr_reader :health, :cumulative_damage
 
   def initialize(health: nil, level: STARTING_LEVEL)
-    @level = level
+    @_level = Characters::Level.new(current: level)
     @health = health || max_health # needs level to be set first :(
 
     @cumulative_damage = 0
@@ -17,6 +42,10 @@ class Character
 
   def alive?
     health > 0
+  end
+
+  def level
+    @_level.to_i
   end
 
   def attack(target)
@@ -53,9 +82,7 @@ class Character
   end
 
   def max_health
-    return STARTING_HEALTH + 500 if level >= 6
-
-    STARTING_HEALTH
+    @_level.max_health
   end
 
   def receive_damage(amount)
@@ -63,7 +90,7 @@ class Character
     @health -= damage
     @cumulative_damage += damage
 
-    @level += 1 if alive? && @cumulative_damage >= @level * 1000
+    @_level.level_up(self)
   end
 
   def receive_healing(amount)
