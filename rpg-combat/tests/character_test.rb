@@ -232,4 +232,10 @@ class CharacterLevelUpTest < Minitest::Test
     3.times { character.join(faction) }
     assert_equal 1, character.level
   end
+
+  def test_character_levels_up_if_joined_factions_is_level_times_3
+    character = Character.new(level: 1)
+    6.times { character.join(Faction.new) }
+    assert_equal 3, character.level
+  end
 end

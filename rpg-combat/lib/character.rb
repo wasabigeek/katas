@@ -22,7 +22,7 @@ module Characters
 
       # TODO: potentially will not work if character jumps multiple levels
       @current += 1 if character.cumulative_damage >= @current * 1000
-      @current += 1 if character.cumulative_factions.size >= 3
+      @current += 1 if character.cumulative_factions.size >= @current * 3
     end
 
     def to_i
