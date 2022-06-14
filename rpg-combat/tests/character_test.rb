@@ -190,18 +190,20 @@ class CharacterLevelUpTest < Minitest::Test
   end
 
   def test_level_1_character_levels_up_after_receiving_1000_damage
-    character = Character.new(health: 1100, level: 1)
-    character.receive_damage(500)
+    character = Character.new(health: 1200, level: 1)
+    character.receive_damage(600)
     character.receive_damage(500)
     assert_equal 2, character.level
   end
 
   def test_level_2_character_levels_up_after_receiving_2000_damage
-    character = Character.new(health: 1100, level: 2)
-    character.receive_damage(1000)
+    character = Character.new(health: 1200, level: 2)
+    character.receive_damage(1100)
     assert_equal 2, character.level
     character.receive_healing(1000)
-    character.receive_damage(1000)
+    character.receive_damage(900)
+    # level up should not happen until the next tier of damage is reached
+    character.receive_damage(100)
     assert_equal 3, character.level
   end
 end

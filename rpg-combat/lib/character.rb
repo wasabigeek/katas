@@ -63,7 +63,7 @@ class Character
     @health -= damage
     @cumulative_damage += damage
 
-    @level += 1 if @cumulative_damage == @level * 1000
+    @level += 1 if @cumulative_damage >= @level * 1000
   end
 
   def receive_healing(amount)
