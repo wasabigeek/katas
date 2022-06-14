@@ -206,4 +206,10 @@ class CharacterLevelUpTest < Minitest::Test
     character.receive_damage(100)
     assert_equal 3, character.level
   end
+
+  def test_character_does_not_level_up_upon_death
+    character = Character.new(health: 1000, level: 1)
+    character.receive_damage(1000)
+    assert_equal 1, character.level
+  end
 end
