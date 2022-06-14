@@ -212,4 +212,24 @@ class CharacterLevelUpTest < Minitest::Test
     character.receive_damage(1000)
     assert_equal 1, character.level
   end
+
+  def test_level_1_character_does_not_level_up_if_joined_factions_less_than_3
+    faction = Faction.new
+    character = Character.new(level: 1)
+    character.join(faction)
+    assert_equal 1, character.level
+  end
+
+  def test_level_1_character_levels_up_if_joined_factions_is_3
+    character = Character.new(level: 1)
+    3.times { character.join(Faction.new) }
+    assert_equal 2, character.level
+  end
+
+  def test_level_1_character_does_not_level_up_if_joined_factions_are_not_unique
+    character = Character.new(level: 1)
+    faction = Faction.new
+    3.times { character.join(faction) }
+    assert_equal 1, character.level
+  end
 end
