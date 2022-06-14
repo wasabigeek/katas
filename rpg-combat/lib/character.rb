@@ -27,6 +27,10 @@ module Characters
       @current += 1 if Faction.historical_joins_count(character) >= @current * 3
     end
 
+    def -(other)
+      to_i - other.to_i
+    end
+
     def to_i
       @current
     end
@@ -37,10 +41,10 @@ class Character
   STARTING_HEALTH = 1000
   STARTING_LEVEL = 1
 
-  attr_reader :health, :cumulative_damage
+  attr_reader :health, :cumulative_damage, :level
 
   def initialize(health: nil, level: STARTING_LEVEL)
-    @_level = Characters::Level.new(current: level)
+    @level = Characters::Level.new(current: level)
     @health = health || max_health # needs level to be set first :(
 
     @cumulative_damage = 0
@@ -48,10 +52,6 @@ class Character
 
   def alive?
     health > 0
-  end
-
-  def level
-    @_level.to_i
   end
 
   def attack(target)
@@ -81,7 +81,7 @@ class Character
 
   def join(faction)
     faction.handle_join(self)
-    @_level.level_up(self)
+    @level.level_up(self)
   end
 
   def leave(faction)
@@ -89,7 +89,7 @@ class Character
   end
 
   def max_health
-    @_level.max_health
+    @level.max_health
   end
 
   def receive_damage(amount)
@@ -97,7 +97,7 @@ class Character
     @health -= damage
     @cumulative_damage += damage
 
-    @_level.level_up(self)
+    @level.level_up(self)
   end
 
   def receive_healing(amount)

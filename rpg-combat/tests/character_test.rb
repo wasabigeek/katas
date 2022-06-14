@@ -147,7 +147,7 @@ end
 class CharacterLevelsTest < Minitest::Test
   def test_starting_level
     character = Character.new
-    assert_equal 1, character.level
+    assert_equal 1, character.level.to_i
   end
 
   def test_starting_health_increases_at_level6
@@ -186,63 +186,63 @@ class CharacterLevelUpTest < Minitest::Test
   def test_level_1_character_does_not_level_up_if_damage_less_than_1000
     character = Character.new(health: 1100, level: 1)
     character.receive_damage(500)
-    assert_equal 1, character.level
+    assert_equal 1, character.level.to_i
   end
 
   def test_level_1_character_levels_up_after_receiving_1000_damage
     character = Character.new(health: 1200, level: 1)
     character.receive_damage(600)
     character.receive_damage(500)
-    assert_equal 2, character.level
+    assert_equal 2, character.level.to_i
   end
 
   def test_level_2_character_levels_up_after_receiving_2000_damage
     character = Character.new(health: 1200, level: 2)
     character.receive_damage(1100)
-    assert_equal 2, character.level
+    assert_equal 2, character.level.to_i
     character.receive_healing(1000)
     character.receive_damage(900)
     # level up should not happen until the next tier of damage is reached
     character.receive_damage(100)
-    assert_equal 3, character.level
+    assert_equal 3, character.level.to_i
   end
 
   def test_character_does_not_level_up_upon_death
     character = Character.new(health: 1000, level: 1)
     character.receive_damage(1000)
-    assert_equal 1, character.level
+    assert_equal 1, character.level.to_i
   end
 
   def test_level_1_character_does_not_level_up_if_joined_factions_less_than_3
     faction = Faction.new
     character = Character.new(level: 1)
     character.join(faction)
-    assert_equal 1, character.level
+    assert_equal 1, character.level.to_i
   end
 
   def test_level_1_character_levels_up_if_joined_factions_is_3
     character = Character.new(level: 1)
     3.times { character.join(Faction.new) }
-    assert_equal 2, character.level
+    assert_equal 2, character.level.to_i
   end
 
   def test_level_1_character_does_not_level_up_if_joined_factions_are_not_unique
     character = Character.new(level: 1)
     faction = Faction.new
     3.times { character.join(faction) }
-    assert_equal 1, character.level
+    assert_equal 1, character.level.to_i
   end
 
   def test_character_levels_up_if_joined_factions_is_level_times_3
     character = Character.new(level: 1)
     6.times { character.join(Faction.new) }
-    assert_equal 3, character.level
+    assert_equal 3, character.level.to_i
   end
 
   def test_character_cannot_go_beyond_level_10
     character = Character.new(level: 1)
     30.times { character.join(Faction.new) }
-    assert_equal 10, character.level
+    assert_equal 10, character.level.to_i
   end
 
   # TODO: This seems debatable
@@ -251,6 +251,6 @@ class CharacterLevelUpTest < Minitest::Test
   #   faction = Faction.new
   #   3.times { character.join(faction) } # wrong in current logic, needs to be 6
   #   character.receive_damage(1000)
-  #   assert_equal 3, character.level
+  #   assert_equal 3, character.level.to_i
   # end
 end
