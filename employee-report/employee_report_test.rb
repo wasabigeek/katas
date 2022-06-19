@@ -13,4 +13,16 @@ class EmployeeReportTest < Minitest::Test
 
     assert_equal ['Sepp', 'Mike'], result.map { |employee| employee[:name] }
   end
+
+  def test_result_sorted_by_name
+    employees = [
+      { name: 'Max', age: 17 },
+      { name: 'Sepp', age: 18 },
+      { name: 'Nina', age: 15 },
+      { name: 'Mike', age: 51 },
+    ]
+    result = EmployeeReport.new(employees).sunday_allowed_employees
+
+    assert_equal ['Mike', 'Sepp'], result.map { |employee| employee[:name] }
+  end
 end
