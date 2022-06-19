@@ -4,10 +4,14 @@ class EmployeeReport
   end
 
   def sunday_allowed_employees
-    employees.select { |employee| employee[:age] >= 18 }
+    of_legal_age_for_sunday
   end
 
   private
 
   attr_reader :employees
+
+  def of_legal_age_for_sunday
+    employees.select { |employee| employee[:age] >= 18 }
+  end
 end
