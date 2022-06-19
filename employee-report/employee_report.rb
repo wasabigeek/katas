@@ -4,7 +4,7 @@ class EmployeeReport
   end
 
   def sunday_allowed_employees
-    of_legal_age_for_sunday
+    of_legal_age_for_sunday.sort_by { |employee| employee[:name] }
   end
 
   private
