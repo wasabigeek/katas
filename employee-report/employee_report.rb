@@ -9,6 +9,10 @@ class Employee
   def name
     @name.upcase
   end
+
+  def <=>(other)
+    other.name <=> name
+  end
 end
 
 class EmployeeReport
@@ -20,8 +24,7 @@ class EmployeeReport
   end
 
   def sunday_allowed_employees
-    of_legal_age_for_sunday
-      .sort_by(&:name)
+    of_legal_age_for_sunday.sort
   end
 
   private
