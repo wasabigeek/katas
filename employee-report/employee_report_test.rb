@@ -11,7 +11,17 @@ class EmployeeReportTest < Minitest::Test
     ]
     result = EmployeeReport.new(employees).sunday_allowed_employees
 
-    assert_equal ['Sepp', 'Mike'], result.map { |employee| employee[:name] }
+    # assert_equal(
+    #   ['Sepp', 'Mike'].sort,
+    #   result.map { |employee| employee[:name] }.sort
+    # )
+
+    # this is less concise, but is closer to the intent
+    result_names = result.map { |employee| employee[:name] }
+    assert_includes result_names, 'Sepp'
+    assert_includes result_names, 'Mike'
+    refute_includes result_names, 'Max'
+    refute_includes result_names, 'Nina'
   end
 
   def test_result_sorted_by_name
