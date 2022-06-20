@@ -10,7 +10,7 @@ class EmployeeReportTest < Minitest::Test
     ]
     result = EmployeeReport.new(employees).sunday_allowed_employees
 
-    result_names = result.map { |employee| employee[:name] }
+    result_names = result.map(&:name)
     assert_includes result_names, 'SEPP'
     assert_includes result_names, 'MIKE'
     refute_includes result_names, 'MAX'
@@ -23,7 +23,7 @@ class EmployeeReportTest < Minitest::Test
     ]
     result = EmployeeReport.new(employees).sunday_allowed_employees
 
-    assert_equal ['MIKE', 'SEPP'], result.map { |employee| employee[:name] }
+    assert_equal ['MIKE', 'SEPP'], result.map(&:name)
   end
 
   def test_results_are_capitalised
@@ -33,6 +33,6 @@ class EmployeeReportTest < Minitest::Test
     ]
     result = EmployeeReport.new(employees).sunday_allowed_employees
 
-    assert_equal ['MIKE', 'SEPP'], result.map { |employee| employee[:name] }
+    assert_equal ['MIKE', 'SEPP'], result.map(&:name)
   end
 end

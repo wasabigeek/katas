@@ -5,10 +5,6 @@ class Employee
     @name = name
     @age = age
   end
-
-  def [](attr_name)
-    self.send(attr_name)
-  end
 end
 
 class EmployeeReport
