@@ -18,13 +18,13 @@ class EmployeeReportTest < Minitest::Test
     refute_includes result, max
   end
 
-  def test_result_sorted_by_name
+  def test_result_sorted_by_names_descending
     employees = [
       sepp = Employee.new(name: 'Sepp', age: 18),
       mike = Employee.new(name: 'Mike', age: 51)
     ]
     result = EmployeeReport.new(employees).sunday_allowed_employees
-    assert_equal [mike, sepp], result
+    assert_equal [sepp, mike], result
   end
 
   def test_results_are_capitalised
