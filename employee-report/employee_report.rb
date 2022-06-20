@@ -12,14 +12,15 @@ class Employee
 end
 
 class EmployeeReport
-  def initialize(employees)
-    @employees = employees
+  def initialize(employee_hashes)
+    @employees = employee_hashes.map do |employee_hash|
+      Employee.new(**employee_hash)
+    end
   end
 
   def sunday_allowed_employees
     of_legal_age_for_sunday
-      .sort_by { |employee| employee[:name] }
-      .map { |employee_hash| Employee.new(**employee_hash) }
+      .sort_by(&:name)
   end
 
   private
@@ -27,6 +28,6 @@ class EmployeeReport
   attr_reader :employees
 
   def of_legal_age_for_sunday
-    employees.select { |employee| employee[:age] >= 18 }
+    employees.select { |employee| employee.age >= 18 }
   end
 end
