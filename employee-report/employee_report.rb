@@ -12,10 +12,11 @@ class Employee
 end
 
 class EmployeeReport
-  def initialize(employee_hashes)
-    @employees = employee_hashes.map do |employee_hash|
-      Employee.new(**employee_hash)
-    end
+  # Imagine that there is a new class that will take the array
+  # of hashes and split out an array of Employees. That output
+  # goes into this class.
+  def initialize(employees)
+    @employees = employees
   end
 
   def sunday_allowed_employees
