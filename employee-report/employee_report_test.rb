@@ -25,4 +25,14 @@ class EmployeeReportTest < Minitest::Test
 
     assert_equal ['Mike', 'Sepp'], result.map { |employee| employee[:name] }
   end
+
+  def test_results_are_capitalised
+    employees = [
+      { name: 'Sepp', age: 18 },
+      { name: 'Mike', age: 51 }
+    ]
+    result = EmployeeReport.new(employees).sunday_allowed_employees
+
+    assert_equal ['MIKE', 'SEPP'], result.map { |employee| employee[:name] }
+  end
 end
