@@ -1,0 +1,11 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+# gem "rails"
+
+gem "rake", "~> 13.0"
+
+gem "minitest", "~> 5.16", :groups => [:development, :test]
+
+gem "byebug", "~> 11.1", :groups => [:development, :test]
