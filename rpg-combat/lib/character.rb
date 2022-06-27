@@ -40,6 +40,7 @@ end
 class Character
   STARTING_HEALTH = 1000
   STARTING_LEVEL = 1
+  STARTING_WEAPON = MagicalWeapon.new(health: Float::Infinity, damage: 100)
 
   attr_reader :health, :cumulative_damage, :level
 
@@ -54,14 +55,15 @@ class Character
     health > 0
   end
 
-  def attack(target)
+  # Requirements are unclear on how attacking / using weapons should interplay
+  # e.g. should a weapon be equipped, then used?
+  # Chose to sidestep that a little for now, assume that attack / use are two different commands.
+  # I did however use MagicalWeapon under the hood, which might not be the right coupling.
+  def attack(target, weapon: STARTING_WEAPON)
     # TODO: account for death?
     return if target == self
 
-    damage = 100
-    damage *= faction_damage_modifier(target:)
-    damage *= level_difference_damage_modifier(target:)
-    target.receive_damage(damage)
+    use(weapon, target:)
   end
 
   def factions
@@ -108,26 +110,5 @@ class Character
 
   def healable_amount
     max_health - health
-  end
-
-  private
-
-  def faction_damage_modifier(target:)
-    if Faction.allies?(self, target)
-      0
-    else
-      1
-    end
-  end
-
-  def level_difference_damage_modifier(target:)
-    level_difference = level - target.level
-    if level_difference >= 5
-      1.5
-    elsif level_difference <= -5
-      0.5
-    else
-      1
-    end
   end
 end
