@@ -6,12 +6,12 @@ class Employee
     @age = age
   end
 
-  def name
+  def display_name
     @name.upcase
   end
 
   def <=>(other)
-    other.name <=> name
+    other.display_name <=> display_name
   end
 end
 

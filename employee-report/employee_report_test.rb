@@ -31,6 +31,6 @@ class EmployeeReportTest < Minitest::Test
     employees = [Employee.new(name: 'Sepp', age: 18)]
     result = EmployeeReport.new(employees).sunday_allowed_employees
     # ActiveSupport has a nice #sole method that could be used instead
-    assert_equal result.first.name, 'SEPP'
+    assert_equal result.first.display_name, 'SEPP'
   end
 end
