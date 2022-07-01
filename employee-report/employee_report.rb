@@ -13,6 +13,18 @@ class Employee
   def <=>(other)
     other.display_name <=> display_name
   end
+
+  def ==(other)
+    data == other.data
+  end
+
+  protected
+
+  attr_reader :name
+
+  def data
+    { name:, age: }
+  end
 end
 
 class EmployeeReport
