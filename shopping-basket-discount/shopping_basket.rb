@@ -14,7 +14,9 @@ class ShoppingBasket
       acc + item_hash[:quantity] * item_hash[:price]
     end
 
-    if price_before_bulk_discounts > 100
+    if price_before_bulk_discounts > 200
+      price_before_bulk_discounts *= 0.90
+    elsif price_before_bulk_discounts > 100
       price_before_bulk_discounts *= 0.95
     end
 
