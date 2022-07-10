@@ -30,13 +30,14 @@ class ShoppingBasketTest < Minitest::Test
     assert_equal 75, basket.total_price
   end
 
-  # def test_total_price_above_100
-  #   basket_data = [
-  #     { name: "A", price: 10, quantity: 5 },
-  #     { name: "B", price: 25, quantity: 2 },
-  #     { name: "C", price: 9.99, quantity: 6 },
-  #   ]
-  #   basket = ShoppingBasket.new(basket_data)
-  #   assert_equal 159.94 * 0.95, basket.total_price
-  # end
+  def test_total_price_above_100_applies_discount
+    basket_data = [
+      { name: "A", price: 10, quantity: 5 },
+      { name: "B", price: 25, quantity: 2 },
+      { name: "C", price: 9.99, quantity: 6 },
+    ]
+    basket = ShoppingBasket.new(basket_data)
+    # rounded down, should test
+    assert_equal 151.94, basket.total_price
+  end
 end
