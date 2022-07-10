@@ -9,6 +9,12 @@ class ShoppingBasket
       .dig(:quantity)
   end
 
+  def total_price
+    basket_data.reduce(0) do |acc, item_hash|
+      acc + item_hash[:quantity] * item_hash[:price]
+    end
+  end
+
   private
 
   attr_reader :basket_data

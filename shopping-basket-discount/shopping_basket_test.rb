@@ -19,4 +19,24 @@ class ShoppingBasketTest < Minitest::Test
   end
 
   # def test_quantity_multiple_line_item;end
+  # def test_quantity_for_missing_item;end
+
+  def test_total_price_without_discounts
+    basket_data = [
+      { name: "A", price: 10, quantity: 5 },
+      { name: "B", price: 25, quantity: 1 },
+    ]
+    basket = ShoppingBasket.new(basket_data)
+    assert_equal 75, basket.total_price
+  end
+
+  # def test_total_price_above_100
+  #   basket_data = [
+  #     { name: "A", price: 10, quantity: 5 },
+  #     { name: "B", price: 25, quantity: 2 },
+  #     { name: "C", price: 9.99, quantity: 6 },
+  #   ]
+  #   basket = ShoppingBasket.new(basket_data)
+  #   assert_equal 159.94 * 0.95, basket.total_price
+  # end
 end
