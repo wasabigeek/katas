@@ -1,17 +1,25 @@
 class ShoppingBasket
+  LineItem = Struct.new(:name, :price, :quantity)
+
   def initialize(basket_data)
-    @basket_data = basket_data
+    @line_items = basket_data.map do |item_hash|
+      LineItem.new(
+        item_hash[:name],
+        item_hash[:price],
+        item_hash[:quantity]
+      )
+    end
   end
 
   def quantity(item_name)
-    basket_data
-      .find { |item_hash| item_hash[:name] == item_name }
-      .dig(:quantity)
+    line_items
+      .find { |item| item.name == item_name }
+      .quantity
   end
 
   def total_price
-    price_before_bulk_discounts = basket_data.reduce(0) do |acc, item_hash|
-      acc + item_hash[:quantity] * item_hash[:price]
+    price_before_bulk_discounts = line_items.reduce(0) do |acc, line_item|
+      acc + line_item.quantity * line_item.price
     end
 
     if price_before_bulk_discounts > 200
@@ -25,5 +33,5 @@ class ShoppingBasket
 
   private
 
-  attr_reader :basket_data
+  attr_reader :line_items
 end
