@@ -1,5 +1,9 @@
 class ShoppingBasket
-  LineItem = Struct.new(:name, :price, :quantity)
+  LineItem = Struct.new(:name, :price, :quantity) do |_new_class|
+    def total_price
+      price * quantity
+    end
+  end
 
   def initialize(basket_data)
     @line_items = basket_data.map do |item_hash|
@@ -19,7 +23,7 @@ class ShoppingBasket
 
   def total_price
     price_before_bulk_discounts = line_items.reduce(0) do |acc, line_item|
-      acc + line_item.quantity * line_item.price
+      acc + line_item.total_price
     end
 
     if price_before_bulk_discounts > 200
