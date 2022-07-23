@@ -11,11 +11,17 @@ describe("The test environment", function() {
 });
 
 describe("add", function() {
-  it("correctly increases number of players", () => {
+  it("correctly adds new players", () => {
     const game = new Game();
-    expect(game.howManyPlayers()).toEqual(0);
-    game.add("bob");
-    expect(game.howManyPlayers()).toEqual(1);
+    expect(game.getPlayers().length).toEqual(0);
+
+    result = game.add("bob");
+    expect(result).toEqual(true);
+
+    players = game.getPlayers()
+    expect(players.length).toEqual(1);
+    expect(players[0].place).toEqual(0);
+    expect(players[0].purse).toEqual(0);
   });
 
   it("does not allow >6 players", () => {
@@ -24,7 +30,8 @@ describe("add", function() {
       game.add(`bob${i}`);
     }
     expect(game.howManyPlayers()).toEqual(6);
-    game.add("alice");
+    result = game.add("alice");
+    expect(result).toEqual(true);
     expect(game.howManyPlayers()).toEqual(6);
   });
 });

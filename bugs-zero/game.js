@@ -1,5 +1,13 @@
 exports = typeof window !== "undefined" && window !== null ? window : global;
 
+class Player {
+  constructor(place, purse, inPenaltyBox = false) {
+    this.place = place;
+    this.purse = purse;
+    this.inPenaltyBox = inPenaltyBox;
+  }
+}
+
 exports.Game = function() {
   var players          = new Array();
   var places           = new Array(6);
@@ -65,6 +73,12 @@ exports.Game = function() {
     console.log("They are player number " + players.length);
 
     return true;
+  };
+
+  this.getPlayers = () => {
+    return players.map((_val, idx) => {
+      return new Player(places[idx], purses[idx], inPenaltyBox[idx])
+    });
   };
 
   this.howManyPlayers = function(){
