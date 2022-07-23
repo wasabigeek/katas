@@ -64,6 +64,8 @@ exports.Game = function() {
   };
 
   this.add = function(playerName){
+    if (this.howManyPlayers() >= 6) return false;
+
     players.push(playerName);
     places[this.howManyPlayers() - 1] = 0;
     purses[this.howManyPlayers() - 1] = 0;

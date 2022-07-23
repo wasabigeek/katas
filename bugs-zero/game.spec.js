@@ -31,7 +31,7 @@ describe("add", function() {
     }
     expect(game.howManyPlayers()).toEqual(6);
     result = game.add("alice");
-    expect(result).toEqual(true);
+    expect(result).toEqual(false);
     expect(game.howManyPlayers()).toEqual(6);
   });
 });
