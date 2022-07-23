@@ -29,9 +29,9 @@ describe("add", function() {
     for (var i = 0; i < 6; i++) {
       game.add(`bob${i}`);
     }
-    expect(game.howManyPlayers()).toEqual(6);
+    expect(game.getPlayers().length).toEqual(6);
     result = game.add("alice");
     expect(result).toEqual(false);
-    expect(game.howManyPlayers()).toEqual(6);
+    expect(game.getPlayers().length).toEqual(6);
   });
 });

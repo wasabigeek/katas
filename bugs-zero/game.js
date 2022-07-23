@@ -64,12 +64,12 @@ exports.Game = function() {
   };
 
   this.add = function(playerName){
-    if (this.howManyPlayers() >= 6) return false;
+    if (this.getPlayers().length >= 6) return false;
 
     players.push(playerName);
-    places[this.howManyPlayers() - 1] = 0;
-    purses[this.howManyPlayers() - 1] = 0;
-    inPenaltyBox[this.howManyPlayers() - 1] = false;
+    places[this.getPlayers().length - 1] = 0;
+    purses[this.getPlayers().length - 1] = 0;
+    inPenaltyBox[this.getPlayers().length - 1] = false;
 
     console.log(playerName + " was added");
     console.log("They are player number " + players.length);
@@ -82,11 +82,6 @@ exports.Game = function() {
       return new Player(places[idx], purses[idx], inPenaltyBox[idx])
     });
   };
-
-  this.howManyPlayers = function(){
-    return players.length;
-  };
-
 
   var askQuestion = function(){
     if(currentCategory() == 'Pop')
