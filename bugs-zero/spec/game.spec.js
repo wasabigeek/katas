@@ -130,11 +130,18 @@ describe("wasCorrectlyAnswered", () => {
     beforeEach(() => {
       game = new Game({ playerNames: ["bob", "alice"] });
       game.wrongAnswer(); // this changes the currentPlayer from bob to alice
+      game.wrongAnswer(); // this changes the currentPlayer from alice to bob
+      expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(false);
     });
 
     it("changes currentPlayer", () => {
       game.wasCorrectlyAnswered();
-      expect(game.currentPlayerState().player.name).toEqual("bob");
+      expect(game.currentPlayerState().player.name).toEqual("alice");
+    });
+
+    it("does not increase the player's purse", () => {
+      game.wasCorrectlyAnswered();
+      expect(game.getPlayers()[0].purse).toEqual(0);
     });
   });
 });
