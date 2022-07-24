@@ -1,10 +1,11 @@
 exports = typeof window !== "undefined" && window !== null ? window : global;
 
 class Player {
-  constructor(place, purse, inPenaltyBox) {
+  constructor(place, purse, inPenaltyBox, name) {
     this.place = place;
     this.purse = purse;
     this.inPenaltyBox = inPenaltyBox;
+    this.name = name;
   }
 }
 
@@ -29,7 +30,7 @@ exports.Game = function() {
   // new getter methods, mainly for testing
   this.currentPlayerState = () => {
     return {
-      player: new Player(places[currentPlayer], purses[currentPlayer], inPenaltyBox[currentPlayer]),
+      player: new Player(places[currentPlayer], purses[currentPlayer], inPenaltyBox[currentPlayer], players[currentPlayer]),
       isGettingOutOfPenaltyBox
     }
   }
@@ -96,7 +97,7 @@ exports.Game = function() {
 
   this.getPlayers = () => {
     return players.map((_val, idx) => {
-      return new Player(places[idx], purses[idx], inPenaltyBox[idx])
+      return new Player(places[idx], purses[idx], inPenaltyBox[idx], players[idx])
     });
   };
 
@@ -189,22 +190,22 @@ exports.Game = function() {
   };
 };
 
-var notAWinner = false;
+// var notAWinner = false;
 
-var game = new Game();
+// var game = new Game();
 
-game.add('Chet');
-game.add('Pat');
-game.add('Sue');
+// game.add('Chet');
+// game.add('Pat');
+// game.add('Sue');
 
-do{
+// do{
 
-  game.roll(Math.floor(Math.random()*6) + 1); // 1 to 6
+//   game.roll(Math.floor(Math.random()*6) + 1); // 1 to 6
 
-  if(Math.floor(Math.random()*10) == 7){
-    notAWinner = game.wrongAnswer();
-  }else{
-    notAWinner = game.wasCorrectlyAnswered();
-  }
+//   if(Math.floor(Math.random()*10) == 7){
+//     notAWinner = game.wrongAnswer();
+//   }else{
+//     notAWinner = game.wasCorrectlyAnswered();
+//   }
 
-}while(notAWinner);
+// }while(notAWinner);

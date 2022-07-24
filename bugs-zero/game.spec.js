@@ -115,5 +115,18 @@ describe("roll", function() {
 });
 
 describe("wasCorrectlyAnswered", () => {
+  describe("with player in penalty box but not getting out", () => {
+    var game;
+    beforeEach(() => {
+      game = new Game();
+      game.add("bob");
+      game.add("alice");
+      game.wrongAnswer(); // this changes the currentPlayer from bob to alice
+    });
 
-})
+    it("changes currentPlayer", () => {
+      game.wasCorrectlyAnswered();
+      expect(game.currentPlayerState().player.name).toEqual("bob");
+    });
+  });
+});
