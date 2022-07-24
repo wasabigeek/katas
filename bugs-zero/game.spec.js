@@ -57,6 +57,11 @@ describe("roll", function() {
       expect(game.questionBank().totalRemaining).toEqual(200);
     });
 
+    it("does not change player place when rolling an even number", () => {
+      game.roll(2);
+      expect(game.currentPlayerState().player.place).toEqual(0);
+    });
+
     it("can get out when rolling an odd number", () => {
       game.roll(1);
       expect(game.currentPlayerState().player.inPenaltyBox).toEqual(true);
@@ -66,6 +71,18 @@ describe("roll", function() {
     it("askQuestion when rolling an odd number", () => {
       game.roll(1);
       expect(game.questionBank().totalRemaining).toEqual(199);
+    });
+
+    it("increments player place by the rolled number when odd", () => {
+      game.roll(1);
+      game.roll(1);
+      expect(game.currentPlayerState().player.place).toEqual(2);
+    });
+
+    it("normalises player place within 0 to 11", () => {
+      game.roll(11);
+      game.roll(1);
+      expect(game.currentPlayerState().player.place).toEqual(0);
     });
   });
   // describe("when player is not in penalty box", () => {

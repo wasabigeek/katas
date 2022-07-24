@@ -208,7 +208,7 @@ game.add('Sue');
 
 do{
 
-  game.roll(Math.floor(Math.random()*6) + 1);
+  game.roll(Math.floor(Math.random()*6) + 1); // 1 to 6
 
   if(Math.floor(Math.random()*10) == 7){
     notAWinner = game.wrongAnswer();
