@@ -20,6 +20,6 @@ Pick any of the listed problems
 
 # Setup
 
-To run tests: `npx jasmine-node .`
+To run tests: `npx jasmine`
 
 Any test source matching the pattern *.spec.js will be executed.

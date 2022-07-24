@@ -1,4 +1,4 @@
-require('./game.js');
+require('../game.js');
 
 describe("The test environment", function() {
   it("should pass", function() {
@@ -36,12 +36,28 @@ describe("add", function() {
   });
 });
 
+describe("new", function() {
+  it("correctly adds players", () => {
+    const playerNames = ["bob", "alice"];
+    const game = new Game({ playerNames });
+    expect(game.getPlayers().length).toEqual(2);
+    game.getPlayers().forEach((player) => {
+      expect(player.place).toEqual(0);
+      expect(player.purse).toEqual(0);
+    });
+  });
+
+  it("does not allow >6 players", () => {
+    const playerNames = ["bob", "bob1", "bob2", "bob3", "bob4", "bob5", "bob6"];
+    expect(() => new Game({ playerNames })).toThrow("Game should have 6 or less players.");
+  });
+});
+
 describe("roll", function() {
   describe("with player in penalty box", () => {
     var game;
     beforeEach(() => {
-      game = new Game();
-      game.add("bob");
+      game = new Game({ playerNames: ["bob"] });
       game.wrongAnswer();
       expect(game.currentPlayerState().player.inPenaltyBox).toEqual(true);
     });
@@ -88,8 +104,7 @@ describe("roll", function() {
   describe("when player is not in penalty box", () => {
     var game;
     beforeEach(() => {
-      game = new Game();
-      game.add("bob");
+      game = new Game({ playerNames: ["bob"] });
       expect(game.currentPlayerState().player.inPenaltyBox).toEqual(false);
     });
 
@@ -118,9 +133,7 @@ describe("wasCorrectlyAnswered", () => {
   describe("with player in penalty box but not getting out", () => {
     var game;
     beforeEach(() => {
-      game = new Game();
-      game.add("bob");
-      game.add("alice");
+      game = new Game({ playerNames: ["bob", "alice"] });
       game.wrongAnswer(); // this changes the currentPlayer from bob to alice
     });
 

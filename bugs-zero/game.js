@@ -13,7 +13,7 @@ const isOdd = (number) => {
   return number % 2 != 0;
 }
 
-exports.Game = function() {
+exports.Game = function(props) {
   var players          = new Array();
   var places           = new Array(6);
   var purses           = new Array(6);
@@ -26,6 +26,23 @@ exports.Game = function() {
 
   var currentPlayer    = 0;
   var isGettingOutOfPenaltyBox = false;
+
+  // TODO: constructor({ playerNames })
+  if (props) {
+    if (props.playerNames.length > 6) {
+      throw "Game should have 6 or less players.";
+    }
+
+    props.playerNames.map((playerName) => {
+      players.push(playerName);
+      places[players.length - 1] = 0;
+      purses[players.length - 1] = 0;
+      inPenaltyBox[players.length - 1] = false;
+
+      console.log(playerName + " was added");
+      console.log("They are player number " + players.length);
+    });
+  }
 
   // new getter methods, mainly for testing
   this.currentPlayerState = () => {
