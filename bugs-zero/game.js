@@ -212,3 +212,23 @@ exports.Game = function(props) {
 //   }
 
 // }while(notAWinner);
+
+// // Problem 3 Suggestion: Extract the logic for whether a question can be answered
+// // to something like canAskQuestion.
+// var notAWinner = false;
+// const playerNames = ["Chet", "Pat", "Sue"];
+// var game = new Game({ playerNames });
+
+// do {
+//   const rollNumber = Math.floor(Math.random()*6) + 1; // 1 to 6
+//   game.roll(rollNumber);
+//   // con: a caller needs to know this sequence of events
+//   if (game.canAskQuestion()) {
+//     game.askQuestion();
+//     if (Math.floor(Math.random()*10) == 7){
+//       notAWinner = game.wrongAnswer();
+//     } else {
+//       notAWinner = game.wasCorrectlyAnswered();
+//     }
+//   };
+// }while(notAWinner);
