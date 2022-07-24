@@ -1,38 +1,8 @@
 require('../game.js');
 
 describe("The test environment", function() {
-  it("should pass", function() {
-    expect(true).toBe(true);
-  });
-
   it("should access game", function() {
     expect(Game).toBeDefined();
-  });
-});
-
-describe("add", function() {
-  it("correctly adds new players", () => {
-    const game = new Game();
-    expect(game.getPlayers().length).toEqual(0);
-
-    result = game.add("bob");
-    expect(result).toEqual(true);
-
-    players = game.getPlayers()
-    expect(players.length).toEqual(1);
-    expect(players[0].place).toEqual(0);
-    expect(players[0].purse).toEqual(0);
-  });
-
-  it("does not allow >6 players", () => {
-    const game = new Game();
-    for (var i = 0; i < 6; i++) {
-      game.add(`bob${i}`);
-    }
-    expect(game.getPlayers().length).toEqual(6);
-    result = game.add("alice");
-    expect(result).toEqual(false);
-    expect(game.getPlayers().length).toEqual(6);
   });
 });
 
@@ -47,9 +17,14 @@ describe("new", function() {
     });
   });
 
+  it("does not allow <2 players", () => {
+    const playerNames = ["bob"]
+    expect(() => new Game({ playerNames })).toThrow("Game should have 2 to 6 players.");
+  });
+
   it("does not allow >6 players", () => {
     const playerNames = ["bob", "bob1", "bob2", "bob3", "bob4", "bob5", "bob6"];
-    expect(() => new Game({ playerNames })).toThrow("Game should have 6 or less players.");
+    expect(() => new Game({ playerNames })).toThrow("Game should have 2 to 6 players.");
   });
 });
 
@@ -57,14 +32,22 @@ describe("roll", function() {
   describe("with player in penalty box", () => {
     var game;
     beforeEach(() => {
-      game = new Game({ playerNames: ["bob"] });
-      game.wrongAnswer();
-      expect(game.currentPlayerState().player.inPenaltyBox).toEqual(true);
+      game = new Game({ playerNames: ["bob", "alice"] });
+      game.wrongAnswer(); // bob in penalty, current player becomes alice
+      game.wrongAnswer(); // alice in penalty, current player becomes bob
+    });
+
+    it("does not change current player", () => {
+      game.roll(1);
+      expect(game.currentPlayerState().player.name).toEqual("bob");
+      game.roll(2);
+      expect(game.currentPlayerState().player.name).toEqual("bob");
     });
 
     it("cannot get out when rolling an even number", () => {
       game.roll(2);
-      expect(game.currentPlayerState().player.inPenaltyBox).toEqual(true);
+      const currentPlayer = game.currentPlayerState().player;
+      expect(currentPlayer.inPenaltyBox).toEqual(true);
       expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(false);
     });
 
@@ -75,12 +58,15 @@ describe("roll", function() {
 
     it("does not change player place when rolling an even number", () => {
       game.roll(2);
-      expect(game.currentPlayerState().player.place).toEqual(0);
+      const currentPlayer = game.currentPlayerState().player;
+      expect(currentPlayer.name).toEqual("bob");
+      expect(currentPlayer.place).toEqual(0);
     });
 
     it("can get out when rolling an odd number", () => {
       game.roll(1);
-      expect(game.currentPlayerState().player.inPenaltyBox).toEqual(true);
+      const currentPlayer = game.currentPlayerState().player;
+      expect(currentPlayer.inPenaltyBox).toEqual(true);
       expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(true);
     });
 
@@ -92,20 +78,29 @@ describe("roll", function() {
     it("increments player place by the rolled number when odd", () => {
       game.roll(1);
       game.roll(1);
-      expect(game.currentPlayerState().player.place).toEqual(2);
+      const currentPlayer = game.currentPlayerState().player;
+      expect(currentPlayer.place).toEqual(2);
     });
 
     it("normalises player place within 0 to 11", () => {
       game.roll(11);
       game.roll(1);
-      expect(game.currentPlayerState().player.place).toEqual(0);
+      const currentPlayer = game.currentPlayerState().player;
+      expect(currentPlayer.place).toEqual(0);
     });
   });
   describe("when player is not in penalty box", () => {
     var game;
     beforeEach(() => {
-      game = new Game({ playerNames: ["bob"] });
-      expect(game.currentPlayerState().player.inPenaltyBox).toEqual(false);
+      game = new Game({ playerNames: ["bob", "alice"] });
+      expect(game.getPlayers()[0].inPenaltyBox).toEqual(false);
+    });
+
+    it("does not change current player", () => {
+      game.roll(1);
+      expect(game.currentPlayerState().player.name).toEqual("bob");
+      game.roll(2);
+      expect(game.currentPlayerState().player.name).toEqual("bob");
     });
 
     it("askQuestion regardless of even or odd number", () => {

@@ -29,8 +29,8 @@ exports.Game = function(props) {
 
   // TODO: constructor({ playerNames })
   if (props) {
-    if (props.playerNames.length > 6) {
-      throw "Game should have 6 or less players.";
+    if (props.playerNames.length < 2 || props.playerNames.length > 6) {
+      throw "Game should have 2 to 6 players.";
     }
 
     props.playerNames.map((playerName) => {
@@ -96,20 +96,6 @@ exports.Game = function(props) {
 
   this.isPlayable = function(howManyPlayers){
     return howManyPlayers >= 2;
-  };
-
-  this.add = function(playerName){
-    if (this.getPlayers().length >= 6) return false;
-
-    players.push(playerName);
-    places[this.getPlayers().length - 1] = 0;
-    purses[this.getPlayers().length - 1] = 0;
-    inPenaltyBox[this.getPlayers().length - 1] = false;
-
-    console.log(playerName + " was added");
-    console.log("They are player number " + players.length);
-
-    return true;
   };
 
   this.getPlayers = () => {
