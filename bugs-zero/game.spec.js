@@ -38,28 +38,48 @@ describe("add", function() {
 
 describe("roll", function() {
   describe("with player in penalty box", () => {
-    it("cannot get out when rolling an even number", () => {
-      const game = new Game();
+    var game;
+    beforeEach(() => {
+      game = new Game();
       game.add("bob");
       game.wrongAnswer();
       expect(game.currentPlayerState().player.inPenaltyBox).toEqual(true);
+    });
 
+    it("cannot get out when rolling an even number", () => {
       game.roll(2);
       expect(game.currentPlayerState().player.inPenaltyBox).toEqual(true);
       expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(false);
     });
 
-    it("can get out when rolling an odd number", () => {
-      const game = new Game();
-      game.add("bob");
-      game.wrongAnswer();
-      expect(game.currentPlayerState().player.inPenaltyBox).toEqual(true);
+    it("does not askQuestion when rolling an even number", () => {
+      game.roll(2);
+      expect(game.questionBank().totalRemaining).toEqual(200);
+    });
 
+    it("can get out when rolling an odd number", () => {
       game.roll(1);
       expect(game.currentPlayerState().player.inPenaltyBox).toEqual(true);
       expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(true);
     });
+
+    it("askQuestion when rolling an odd number", () => {
+      game.roll(1);
+      expect(game.questionBank().totalRemaining).toEqual(199);
+    });
   });
+  // describe("when player is not in penalty box", () => {
+  //   it("cannot get out when rolling an even number", () => {
+  //     const game = new Game();
+  //     game.add("bob");
+  //     game.wrongAnswer();
+  //     expect(game.currentPlayerState().player.inPenaltyBox).toEqual(true);
+
+  //     game.roll(2);
+  //     expect(game.currentPlayerState().player.inPenaltyBox).toEqual(true);
+  //     expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(false);
+  //   });
+  // });
 });
 
 describe("wasCorrectlyAnswered", () => {

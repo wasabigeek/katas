@@ -25,10 +25,17 @@ exports.Game = function() {
 
   var currentPlayer    = 0;
   var isGettingOutOfPenaltyBox = false;
+
+  // new getter methods, mainly for testing
   this.currentPlayerState = () => {
     return {
       player: new Player(places[currentPlayer], purses[currentPlayer], inPenaltyBox[currentPlayer]),
       isGettingOutOfPenaltyBox
+    }
+  }
+  this.questionBank = () => {
+    return {
+      totalRemaining: [popQuestions, scienceQuestions, sportsQuestions, rockQuestions].reduce((accum, current) => { return accum + current.length }, 0)
     }
   }
 
