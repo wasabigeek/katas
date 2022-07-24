@@ -1,11 +1,15 @@
 exports = typeof window !== "undefined" && window !== null ? window : global;
 
 class Player {
-  constructor(place, purse, inPenaltyBox = false) {
+  constructor(place, purse, inPenaltyBox) {
     this.place = place;
     this.purse = purse;
     this.inPenaltyBox = inPenaltyBox;
   }
+}
+
+const isOdd = (number) => {
+  return number % 2 != 0;
 }
 
 exports.Game = function() {
@@ -21,6 +25,12 @@ exports.Game = function() {
 
   var currentPlayer    = 0;
   var isGettingOutOfPenaltyBox = false;
+  this.currentPlayerState = () => {
+    return {
+      player: new Player(places[currentPlayer], purses[currentPlayer], inPenaltyBox[currentPlayer]),
+      isGettingOutOfPenaltyBox
+    }
+  }
 
   var didPlayerWin = function(){
     return !(purses[currentPlayer] == 6)
@@ -99,7 +109,7 @@ exports.Game = function() {
     console.log("They have rolled a " + roll);
 
     if(inPenaltyBox[currentPlayer]){
-      if(roll % 2 != 0){
+      if(isOdd(roll)){
         isGettingOutOfPenaltyBox = true;
 
         console.log(players[currentPlayer] + " is getting out of the penalty box");

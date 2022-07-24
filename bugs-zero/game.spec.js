@@ -35,3 +35,33 @@ describe("add", function() {
     expect(game.getPlayers().length).toEqual(6);
   });
 });
+
+describe("roll", function() {
+  describe("with player in penalty box", () => {
+    it("cannot get out when rolling an even number", () => {
+      const game = new Game();
+      game.add("bob");
+      game.wrongAnswer();
+      expect(game.currentPlayerState().player.inPenaltyBox).toEqual(true);
+
+      game.roll(2);
+      expect(game.currentPlayerState().player.inPenaltyBox).toEqual(true);
+      expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(false);
+    });
+
+    it("can get out when rolling an odd number", () => {
+      const game = new Game();
+      game.add("bob");
+      game.wrongAnswer();
+      expect(game.currentPlayerState().player.inPenaltyBox).toEqual(true);
+
+      game.roll(1);
+      expect(game.currentPlayerState().player.inPenaltyBox).toEqual(true);
+      expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(true);
+    });
+  });
+});
+
+describe("wasCorrectlyAnswered", () => {
+
+})
