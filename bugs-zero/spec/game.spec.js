@@ -169,10 +169,16 @@ describe("wasCorrectlyAnswered", () => {
       expect(result).toEqual(true);
     });
 
-    // difficult to test now :/
-    // it("returns false if player wins", () => {
-    //   const result = game.wasCorrectlyAnswered();
-    //   expect(result).toEqual(false);
-    // });
+    it("returns false if player wins", () => {
+      // TODO: redesign such that it's easier to compose a game state
+      game = new Game({ playerNames: ["bob", "alice"], amountToWin: 1 });
+      game.wrongAnswer(); // this changes the currentPlayer from bob to alice
+      game.wrongAnswer(); // this changes the currentPlayer from alice to bob
+      game.roll(1);
+      expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(true);
+
+      const result = game.wasCorrectlyAnswered();
+      expect(result).toEqual(false);
+    });
   });
 });

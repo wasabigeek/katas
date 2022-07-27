@@ -27,7 +27,10 @@ exports.Game = function(props) {
   var currentPlayer    = 0;
   var isGettingOutOfPenaltyBox = false;
 
-  // TODO: constructor({ playerNames })
+  // "Settings"
+  var amountToWin = 6;
+
+  // TODO: constructor({ playerNames, amountToWin })
   if (props) {
     if (props.playerNames.length < 2 || props.playerNames.length > 6) {
       throw "Game should have 2 to 6 players.";
@@ -42,6 +45,9 @@ exports.Game = function(props) {
       console.log(playerName + " was added");
       console.log("They are player number " + players.length);
     });
+
+    // Settings
+    if (props.amountToWin) amountToWin = props.amountToWin;
   }
 
   // new getter methods, mainly for testing
@@ -59,7 +65,7 @@ exports.Game = function(props) {
 
   // confusing variable and function naming, should be the opposite >_<
   var didPlayerWin = function(){
-    return !(purses[currentPlayer] == 6)
+    return !(purses[currentPlayer] == amountToWin)
   };
 
   var currentCategory = function(){
