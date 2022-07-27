@@ -57,6 +57,7 @@ exports.Game = function(props) {
     }
   }
 
+  // confusing variable and function naming, should be the opposite >_<
   var didPlayerWin = function(){
     return !(purses[currentPlayer] == 6)
   };
@@ -223,12 +224,13 @@ exports.Game = function(props) {
 //   const rollNumber = Math.floor(Math.random()*6) + 1; // 1 to 6
 //   game.roll(rollNumber);
 //   // con: a caller needs to know this sequence of events
-//   if (game.canAskQuestion()) {
-//     game.askQuestion();
+//   // perhaps a state machine to prevent bugs?
+//   if (game.askQuestion()) {
 //     if (Math.floor(Math.random()*10) == 7){
-//       notAWinner = game.wrongAnswer();
+//       game.wrongAnswer();
 //     } else {
-//       notAWinner = game.wasCorrectlyAnswered();
+//       game.wasCorrectlyAnswered();
 //     }
+//     if (game.checkWinner()) break; // might be easy to infinite loop
 //   };
-// }while(notAWinner);
+// }while(true);

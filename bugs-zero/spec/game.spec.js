@@ -144,4 +144,35 @@ describe("wasCorrectlyAnswered", () => {
       expect(game.getPlayers()[0].purse).toEqual(0);
     });
   });
+  describe("with player in penalty box but getting out", () => {
+    var game;
+    beforeEach(() => {
+      game = new Game({ playerNames: ["bob", "alice"] });
+      game.wrongAnswer(); // this changes the currentPlayer from bob to alice
+      game.wrongAnswer(); // this changes the currentPlayer from alice to bob
+      game.roll(1);
+      expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(true);
+    });
+
+    it("changes currentPlayer", () => {
+      game.wasCorrectlyAnswered();
+      expect(game.currentPlayerState().player.name).toEqual("alice");
+    });
+
+    it("increases the player's purse", () => {
+      game.wasCorrectlyAnswered();
+      expect(game.getPlayers()[0].purse).toEqual(1);
+    });
+
+    it("returns true if player does not win", () => {
+      const result = game.wasCorrectlyAnswered();
+      expect(result).toEqual(true);
+    });
+
+    // difficult to test now :/
+    // it("returns false if player wins", () => {
+    //   const result = game.wasCorrectlyAnswered();
+    //   expect(result).toEqual(false);
+    // });
+  });
 });
