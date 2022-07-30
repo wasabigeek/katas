@@ -133,13 +133,12 @@ exports.Game = function(props) {
 
     if(inPenaltyBox[currentPlayer] && !isOdd(roll)) {
       console.log(players[currentPlayer] + " is not getting out of the penalty box");
-      isGettingOutOfPenaltyBox = false;
       return false;
     }
 
     if(inPenaltyBox[currentPlayer] && isOdd(roll)){
-      isGettingOutOfPenaltyBox = true;
-      console.log(players[currentPlayer] + " is getting out of the penalty box");
+      console.log(players[currentPlayer] + " is out of the penalty box");
+      inPenaltyBox[currentPlayer] = false;
     }
 
     places[currentPlayer] = places[currentPlayer] + roll;
@@ -155,28 +154,17 @@ exports.Game = function(props) {
   };
 
   this.wasCorrectlyAnswered = function(){
-    if(inPenaltyBox[currentPlayer]){
-      if(isGettingOutOfPenaltyBox){
-        console.log('Answer was correct!!!!');
-        purses[currentPlayer] += 1;
-        console.log(players[currentPlayer] + " now has " +
-                    purses[currentPlayer]  + " Gold Coins.");
+    // should not happen
+    if(inPenaltyBox[currentPlayer]) return true;
 
-        var winner = didPlayerWin();
-        return winner;
-      }else{
-        return true;
-      }
-    }else{
-      console.log("Answer was correct!!!!");
+    console.log("Answer was correct!!!!");
 
-      purses[currentPlayer] += 1;
-      console.log(players[currentPlayer] + " now has " +
-                  purses[currentPlayer]  + " Gold Coins.");
+    purses[currentPlayer] += 1;
+    console.log(players[currentPlayer] + " now has " +
+                purses[currentPlayer]  + " Gold Coins.");
 
-      var winner = didPlayerWin();
-      return winner;
-    }
+    var winner = didPlayerWin();
+    return winner;
   };
 
   this.wrongAnswer = function(){
@@ -191,6 +179,7 @@ var notAWinner = false;
 
 var game = new Game({ playerNames: ['Chet', 'Pat', 'Sue'] });
 
+// TODO: the split of logic is a bit better now, but it's quite easy for wrong orders of actions to be done.
 do {
   const canAnswerQuestion = game.roll(Math.floor(Math.random()*6) + 1); // 1 to 6
   if (canAnswerQuestion) {

@@ -44,12 +44,10 @@ describe("roll", function() {
       expect(game.currentPlayerState().player.name).toEqual("bob");
     });
 
-    // TODO: remove after refactor
     it("cannot get out when rolling an even number", () => {
       game.roll(2);
       const currentPlayer = game.currentPlayerState().player;
       expect(currentPlayer.inPenaltyBox).toEqual(true);
-      expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(false);
     });
 
     it("returns false when rolling an even number", () => {
@@ -69,12 +67,10 @@ describe("roll", function() {
       expect(currentPlayer.place).toEqual(0);
     });
 
-    // TODO: remove after refactor
-    it("can get out when rolling an odd number", () => {
+    it("gets out of penalty box when rolling an odd number", () => {
       game.roll(1);
       const currentPlayer = game.currentPlayerState().player;
-      expect(currentPlayer.inPenaltyBox).toEqual(true);
-      expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(true);
+      expect(currentPlayer.inPenaltyBox).toEqual(false);
     });
 
     it("returns true when rolling an odd number", () => {
@@ -154,50 +150,21 @@ describe("progressPlayer", () => {
 });
 
 describe("wasCorrectlyAnswered", () => {
-  describe("with player in penalty box but not getting out", () => {
+  describe("with player in penalty box", () => {
     var game;
     beforeEach(() => {
       game = new Game({ playerNames: ["bob", "alice"] });
-      game.wrongAnswer(); // this changes the currentPlayer from bob to alice
-      game.wrongAnswer(); // this changes the currentPlayer from alice to bob
-      expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(false);
+      game.wrongAnswer(); // workaround to put bob in penalty
     });
 
     it("does not increase the player's purse", () => {
       game.wasCorrectlyAnswered();
       expect(game.getPlayers()[0].purse).toEqual(0);
     });
-  });
-  describe("with player in penalty box but getting out", () => {
-    var game;
-    beforeEach(() => {
-      game = new Game({ playerNames: ["bob", "alice"] });
-      game.wrongAnswer(); // this changes the currentPlayer from bob to alice
-      game.wrongAnswer(); // this changes the currentPlayer from alice to bob
-      game.roll(1);
-      expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(true);
-    });
-
-    it("increases the player's purse", () => {
-      game.wasCorrectlyAnswered();
-      expect(game.getPlayers()[0].purse).toEqual(1);
-    });
 
     it("returns true if player does not win", () => {
       const result = game.wasCorrectlyAnswered();
       expect(result).toEqual(true);
-    });
-
-    it("returns false if player wins", () => {
-      // TODO: redesign such that it's easier to compose a game state
-      game = new Game({ playerNames: ["bob", "alice"], amountToWin: 1 });
-      game.wrongAnswer(); // this changes the currentPlayer from bob to alice
-      game.wrongAnswer(); // this changes the currentPlayer from alice to bob
-      game.roll(1);
-      expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(true);
-
-      const result = game.wasCorrectlyAnswered();
-      expect(result).toEqual(false);
     });
   });
   describe("with player not in penalty box", () => {
@@ -222,7 +189,6 @@ describe("wasCorrectlyAnswered", () => {
       game.wrongAnswer(); // this changes the currentPlayer from bob to alice
       game.wrongAnswer(); // this changes the currentPlayer from alice to bob
       game.roll(1);
-      expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(true);
 
       const result = game.wasCorrectlyAnswered();
       expect(result).toEqual(false);
