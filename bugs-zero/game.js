@@ -26,6 +26,7 @@ class QuestionBank {
     return currentQuestion;
   }
 
+  // TODO: totalRemaining no longer makes sense, rework this to asked count instead
   totalRemaining = () => {
     return Object
       .keys(this.questionIndexes)
@@ -33,24 +34,13 @@ class QuestionBank {
   }
 
   category = (playerPlace) => {
-    if(playerPlace == 0)
+    if([0, 4, 8].includes(playerPlace))
       return 'Pop';
-    if(playerPlace == 4)
-      return 'Pop';
-    if(playerPlace == 8)
-      return 'Pop';
-    if(playerPlace == 1)
+    if([1, 5, 9].includes(playerPlace))
       return 'Science';
-    if(playerPlace == 5)
-      return 'Science';
-    if(playerPlace == 9)
-      return 'Science';
-    if(playerPlace == 2)
+    if([2, 6, 10].includes(playerPlace))
       return 'Sports';
-    if(playerPlace == 6)
-      return 'Sports';
-    if(playerPlace == 10)
-      return 'Sports';
+
     return 'Rock';
   }
 }
