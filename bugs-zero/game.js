@@ -10,6 +10,8 @@ class Player {
 }
 
 class Places {
+  static total = 12;
+
   // encapsulate mapping of place to question category
   static questionCategory = ({ playerPlace }) => {
     if([0, 4, 8].includes(playerPlace))
@@ -24,8 +26,8 @@ class Places {
   // encapsulate how many places there are here
   static indexFromRoll = ({ roll, playerPlace }) => {
     var newPlace = playerPlace + roll;
-    if(newPlace > 11){
-      newPlace = newPlace - 12;
+    if(newPlace > this.total - 1){
+      newPlace = newPlace - this.total;
     }
 
     return newPlace;
