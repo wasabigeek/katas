@@ -33,11 +33,10 @@ class QuestionBank {
     return currentQuestion;
   }
 
-  // TODO: totalRemaining no longer makes sense, rework this to asked count instead
-  totalRemaining = () => {
+  askedCount = () => {
     return Object
       .keys(this.questionIndexes)
-      .reduce((accum, current) => { return accum + 50 - this.questionIndexes[current] }, 0);
+      .reduce((accum, current) => { return accum + this.questionIndexes[current] }, 0);
   }
 
   // At first I thought I could make this a part of a "category config", but that might make it easy to make a mistake (no checks to ensure one place == 1 config only etc.). Also, now the place logic is coupled to Game and QuestionBank.
