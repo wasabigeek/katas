@@ -11,37 +11,25 @@ class Player {
 
 class QuestionBank {
   constructor() {
-    this.popQuestionsIndex     = 0;
-    this.scienceQuestionsIndex = 0;
-    this.sportsQuestionsIndex  = 0;
-    this.rockQuestionsIndex    = 0;
+    this.questionIndexes = {
+      'Pop': 0,
+      'Science': 0,
+      'Sports': 0,
+      'Rock': 0
+    }
   }
 
   shift = ({ playerPlace }) => {
-    if(this.category(playerPlace) == 'Pop') {
-      const currentQuestion = `Pop Question ${this.popQuestionsIndex}`;
-      this.popQuestionsIndex += 1;
-      return currentQuestion;
-    }
-    if(this.category(playerPlace) == 'Science') {
-      const currentQuestion = `Science Question ${this.scienceQuestionsIndex}`;
-      this.scienceQuestionsIndex += 1;
-      return currentQuestion;
-    }
-    if(this.category(playerPlace) == 'Sports') {
-      const currentQuestion = `Sports Question ${this.sportsQuestionsIndex}`;
-      this.sportsQuestionsIndex += 1;
-      return currentQuestion;
-    }
-    if(this.category(playerPlace) == 'Rock') {
-      const currentQuestion = `Rock Question ${this.rockQuestionsIndex}`;
-      this.rockQuestionsIndex += 1;
-      return currentQuestion;
-    }
+    const playerCategory = this.category(playerPlace);
+    const currentQuestion = `${playerCategory} Question ${this.questionIndexes[playerCategory]}`;
+    this.questionIndexes[playerCategory] += 1;
+    return currentQuestion;
   }
 
   totalRemaining = () => {
-    return [this.popQuestionsIndex, this.scienceQuestionsIndex, this.sportsQuestionsIndex, this.rockQuestionsIndex].reduce((accum, current) => { return accum + 50 - current }, 0);
+    return Object
+      .keys(this.questionIndexes)
+      .reduce((accum, current) => { return accum + 50 - this.questionIndexes[current] }, 0);
   }
 
   category = (playerPlace) => {
