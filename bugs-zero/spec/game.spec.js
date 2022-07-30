@@ -44,6 +44,14 @@ describe("roll", function() {
       expect(game.currentPlayerState().player.name).toEqual("bob");
     });
 
+    // TODO: remove after refactor
+    it("cannot get out when rolling an even number", () => {
+      game.roll(2);
+      const currentPlayer = game.currentPlayerState().player;
+      expect(currentPlayer.inPenaltyBox).toEqual(true);
+      expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(false);
+    });
+
     it("returns false when rolling an even number", () => {
       const result = game.roll(2);
       expect(result).toEqual(false);
@@ -59,6 +67,14 @@ describe("roll", function() {
       const currentPlayer = game.currentPlayerState().player;
       expect(currentPlayer.name).toEqual("bob");
       expect(currentPlayer.place).toEqual(0);
+    });
+
+    // TODO: remove after refactor
+    it("can get out when rolling an odd number", () => {
+      game.roll(1);
+      const currentPlayer = game.currentPlayerState().player;
+      expect(currentPlayer.inPenaltyBox).toEqual(true);
+      expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(true);
     });
 
     it("returns true when rolling an odd number", () => {
@@ -126,7 +142,26 @@ describe("roll", function() {
 });
 
 describe("wasCorrectlyAnswered", () => {
-  describe("with player in penalty box", () => {
+  describe("with player in penalty box but not getting out", () => {
+    var game;
+    beforeEach(() => {
+      game = new Game({ playerNames: ["bob", "alice"] });
+      game.wrongAnswer(); // this changes the currentPlayer from bob to alice
+      game.wrongAnswer(); // this changes the currentPlayer from alice to bob
+      expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(false);
+    });
+
+    it("changes currentPlayer", () => {
+      game.wasCorrectlyAnswered();
+      expect(game.currentPlayerState().player.name).toEqual("alice");
+    });
+
+    it("does not increase the player's purse", () => {
+      game.wasCorrectlyAnswered();
+      expect(game.getPlayers()[0].purse).toEqual(0);
+    });
+  });
+  describe("with player in penalty box but getting out", () => {
     var game;
     beforeEach(() => {
       game = new Game({ playerNames: ["bob", "alice"] });

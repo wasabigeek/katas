@@ -25,6 +25,7 @@ exports.Game = function(props) {
   var rockQuestions    = new Array();
 
   var currentPlayer    = 0;
+  var isGettingOutOfPenaltyBox = false;
 
   // "Settings"
   var amountToWin = 6;
@@ -127,10 +128,12 @@ exports.Game = function(props) {
 
     if(inPenaltyBox[currentPlayer] && !isOdd(roll)) {
       console.log(players[currentPlayer] + " is not getting out of the penalty box");
+      isGettingOutOfPenaltyBox = false;
       return false;
     }
 
     if(inPenaltyBox[currentPlayer] && isOdd(roll)){
+      isGettingOutOfPenaltyBox = true;
       console.log(players[currentPlayer] + " is getting out of the penalty box");
     }
 
@@ -199,22 +202,25 @@ exports.Game = function(props) {
   };
 };
 
-var notAWinner = false;
+// var notAWinner = false;
 
-var game = new Game({ playerNames: ['Chet', 'Pat', 'Sue'] });
+// var game = new Game();
 
-do {
-  const canAnswerQuestion = game.roll(Math.floor(Math.random()*6) + 1); // 1 to 6
-  if (canAnswerQuestion) {
-    if (Math.floor(Math.random()*10) == 7){
-      notAWinner = game.wrongAnswer();
-    } else {
-      notAWinner = game.wasCorrectlyAnswered();
-    }
-  }
+// game.add('Chet');
+// game.add('Pat');
+// game.add('Sue');
 
-  // TODO: change player
-} while(notAWinner);
+// do{
+
+//   game.roll(Math.floor(Math.random()*6) + 1); // 1 to 6
+
+//   if(Math.floor(Math.random()*10) == 7){
+//     notAWinner = game.wrongAnswer();
+//   }else{
+//     notAWinner = game.wasCorrectlyAnswered();
+//   }
+
+// }while(notAWinner);
 
 // // Problem 3 Suggestion: Extract the logic for whether a question can be answered
 // // to something like canAskQuestion.
