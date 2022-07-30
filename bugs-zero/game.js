@@ -32,20 +32,19 @@ class Places {
   }
 }
 
+// This doesn't have as much reason to exist outside of Game anymore 🤔.
+// Note that this only works now because the questions can be built from the category and index.
+// If we had an actual bank of questions then I think this and Places would be coupled w.r.t. the categories.
 class QuestionBank {
   constructor() {
-    this.questionIndexes = {
-      'Pop': 0,
-      'Science': 0,
-      'Sports': 0,
-      'Rock': 0
-    }
+    this.questionIndexes = {}
   }
 
-  shift = ({ playerPlace }) => {
-    const playerCategory = Places.questionCategory(playerPlace);
-    const currentQuestion = `${playerCategory} Question ${this.questionIndexes[playerCategory]}`;
-    this.questionIndexes[playerCategory] += 1;
+  shift = ({ category }) => {
+    if (!this.questionIndexes[category]) this.questionIndexes[category] = 0;
+
+    const currentQuestion = `${category} Question ${this.questionIndexes[category]}`;
+    this.questionIndexes[category] += 1;
     return currentQuestion;
   }
 
@@ -125,7 +124,8 @@ exports.Game = function(props) {
   };
 
   var askQuestion = function(){
-    console.log(questionBank.shift({ playerPlace: places[currentPlayer] }));
+    const questionText = questionBank.shift({ category: Places.questionCategory(places[currentPlayer]) });
+    console.log(questionText);
   };
 
   this.roll = function(roll){
