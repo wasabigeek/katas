@@ -26,13 +26,13 @@ class QuestionBank {
 
   shift = ({ playerPlace }) => {
     if(this.category(playerPlace) == 'Pop')
-      console.log(this.popQuestions.shift());
+      return this.popQuestions.shift();
     if(this.category(playerPlace) == 'Science')
-      console.log(this.scienceQuestions.shift());
+      return this.scienceQuestions.shift();
     if(this.category(playerPlace) == 'Sports')
-      console.log(this.sportsQuestions.shift());
+      return this.sportsQuestions.shift();
     if(this.category(playerPlace) == 'Rock')
-      console.log(this.rockQuestions.shift());
+      return this.rockQuestions.shift();
   }
 
   totalRemaining = () => {
@@ -131,7 +131,7 @@ exports.Game = function(props) {
   };
 
   var askQuestion = function(){
-    questionBank.shift({ playerPlace: places[currentPlayer] });
+    console.log(questionBank.shift({ playerPlace: places[currentPlayer] }));
   };
 
   this.roll = function(roll){
