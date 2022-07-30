@@ -57,7 +57,7 @@ describe("roll", function() {
 
     it("does not askQuestion when rolling an even number", () => {
       game.roll(2);
-      expect(game.questionBank().totalRemaining).toEqual(200);
+      expect(game.questionBank().totalRemaining()).toEqual(200);
     });
 
     it("does not change player place when rolling an even number", () => {
@@ -80,7 +80,7 @@ describe("roll", function() {
 
     it("askQuestion when rolling an odd number", () => {
       game.roll(1);
-      expect(game.questionBank().totalRemaining).toEqual(199);
+      expect(game.questionBank().totalRemaining()).toEqual(199);
     });
 
     it("increments player place by the rolled number when odd", () => {
@@ -113,9 +113,9 @@ describe("roll", function() {
 
     it("askQuestion regardless of even or odd number", () => {
       game.roll(1);
-      expect(game.questionBank().totalRemaining).toEqual(199);
+      expect(game.questionBank().totalRemaining()).toEqual(199);
       game.roll(2);
-      expect(game.questionBank().totalRemaining).toEqual(198);
+      expect(game.questionBank().totalRemaining()).toEqual(198);
     });
 
     it("returns true regardless of even or odd number", () => {

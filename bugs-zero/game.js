@@ -9,6 +9,59 @@ class Player {
   }
 }
 
+class QuestionBank {
+  constructor() {
+    this.popQuestions     = new Array();
+    this.scienceQuestions = new Array();
+    this.sportsQuestions  = new Array();
+    this.rockQuestions    = new Array();
+
+    for(var i = 0; i < 50; i++){
+      this.popQuestions.push("Pop Question "+i);
+      this.scienceQuestions.push("Science Question "+i);
+      this.sportsQuestions.push("Sports Question "+i);
+      this.rockQuestions.push("Rock Question "+i);
+    };
+  }
+
+  shift = ({ playerPlace }) => {
+    if(this.category(playerPlace) == 'Pop')
+      console.log(this.popQuestions.shift());
+    if(this.category(playerPlace) == 'Science')
+      console.log(this.scienceQuestions.shift());
+    if(this.category(playerPlace) == 'Sports')
+      console.log(this.sportsQuestions.shift());
+    if(this.category(playerPlace) == 'Rock')
+      console.log(this.rockQuestions.shift());
+  }
+
+  totalRemaining = () => {
+    return [this.popQuestions, this.scienceQuestions, this.sportsQuestions, this.rockQuestions].reduce((accum, current) => { return accum + current.length }, 0);
+  }
+
+  category = (playerPlace) => {
+    if(playerPlace == 0)
+      return 'Pop';
+    if(playerPlace == 4)
+      return 'Pop';
+    if(playerPlace == 8)
+      return 'Pop';
+    if(playerPlace == 1)
+      return 'Science';
+    if(playerPlace == 5)
+      return 'Science';
+    if(playerPlace == 9)
+      return 'Science';
+    if(playerPlace == 2)
+      return 'Sports';
+    if(playerPlace == 6)
+      return 'Sports';
+    if(playerPlace == 10)
+      return 'Sports';
+    return 'Rock';
+  }
+}
+
 const isOdd = (number) => {
   return number % 2 != 0;
 }
@@ -19,10 +72,7 @@ exports.Game = function(props) {
   var purses           = new Array(6);
   var inPenaltyBox     = new Array(6);
 
-  var popQuestions     = new Array();
-  var scienceQuestions = new Array();
-  var sportsQuestions  = new Array();
-  var rockQuestions    = new Array();
+  var questionBank     = new QuestionBank();
 
   var currentPlayer    = 0;
   var isGettingOutOfPenaltyBox = false;
@@ -58,42 +108,11 @@ exports.Game = function(props) {
     }
   }
   this.questionBank = () => {
-    return {
-      totalRemaining: [popQuestions, scienceQuestions, sportsQuestions, rockQuestions].reduce((accum, current) => { return accum + current.length }, 0)
-    }
+    return questionBank;
   }
 
   this.didPlayerWin = function(){
     return (purses[currentPlayer] == amountToWin)
-  };
-
-  var currentCategory = function(){
-    if(places[currentPlayer] == 0)
-      return 'Pop';
-    if(places[currentPlayer] == 4)
-      return 'Pop';
-    if(places[currentPlayer] == 8)
-      return 'Pop';
-    if(places[currentPlayer] == 1)
-      return 'Science';
-    if(places[currentPlayer] == 5)
-      return 'Science';
-    if(places[currentPlayer] == 9)
-      return 'Science';
-    if(places[currentPlayer] == 2)
-      return 'Sports';
-    if(places[currentPlayer] == 6)
-      return 'Sports';
-    if(places[currentPlayer] == 10)
-      return 'Sports';
-    return 'Rock';
-  };
-
-  for(var i = 0; i < 50; i++){
-    popQuestions.push("Pop Question "+i);
-    scienceQuestions.push("Science Question "+i);
-    sportsQuestions.push("Sports Question "+i);
-    rockQuestions.push("Rock Question "+i);
   };
 
   this.isPlayable = function(howManyPlayers){
@@ -112,14 +131,7 @@ exports.Game = function(props) {
   };
 
   var askQuestion = function(){
-    if(currentCategory() == 'Pop')
-      console.log(popQuestions.shift());
-    if(currentCategory() == 'Science')
-      console.log(scienceQuestions.shift());
-    if(currentCategory() == 'Sports')
-      console.log(sportsQuestions.shift());
-    if(currentCategory() == 'Rock')
-      console.log(rockQuestions.shift());
+    questionBank.shift({ playerPlace: places[currentPlayer] });
   };
 
   this.roll = function(roll){
@@ -142,7 +154,7 @@ exports.Game = function(props) {
     }
 
     console.log(players[currentPlayer] + "'s new location is " + places[currentPlayer]);
-    console.log("The category is " + currentCategory());
+    console.log("The category is " + this.questionBank().category(places[currentPlayer]));
     askQuestion();
 
     return true;
