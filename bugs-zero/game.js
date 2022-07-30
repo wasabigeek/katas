@@ -11,9 +11,25 @@ class Player {
 
 class Places {
   // encapsulate mapping of place to question category
-  questionCategory = ({ playerPlace }) => {}
+  static questionCategory = ({ playerPlace }) => {
+    if([0, 4, 8].includes(playerPlace))
+      return 'Pop';
+    if([1, 5, 9].includes(playerPlace))
+      return 'Science';
+    if([2, 6, 10].includes(playerPlace))
+      return 'Sports';
+
+    return 'Rock';
+  }
   // encapsulate how many places there are here
-  indexFromRoll = ({ roll }) => {}
+  static indexFromRoll = ({ roll, playerPlace }) => {
+    var newPlace = playerPlace + roll;
+    if(newPlace > 11){
+      newPlace = newPlace - 12;
+    }
+
+    return newPlace;
+  }
 }
 
 class QuestionBank {
@@ -27,7 +43,7 @@ class QuestionBank {
   }
 
   shift = ({ playerPlace }) => {
-    const playerCategory = this.category(playerPlace);
+    const playerCategory = Places.questionCategory(playerPlace);
     const currentQuestion = `${playerCategory} Question ${this.questionIndexes[playerCategory]}`;
     this.questionIndexes[playerCategory] += 1;
     return currentQuestion;
@@ -37,20 +53,6 @@ class QuestionBank {
     return Object
       .keys(this.questionIndexes)
       .reduce((accum, current) => { return accum + this.questionIndexes[current] }, 0);
-  }
-
-  // At first I thought I could make this a part of a "category config", but that might make it easy to make a mistake (no checks to ensure one place == 1 config only etc.). Also, now the place logic is coupled to Game and QuestionBank.
-
-  // Possibility: QuestionBank is a dumb counter that takes whatever category is provided, counts and spits out the question. This works for the current requirements, but doesn't feel like it would work in the future. YAGNI I guess.
-  category = (playerPlace) => {
-    if([0, 4, 8].includes(playerPlace))
-      return 'Pop';
-    if([1, 5, 9].includes(playerPlace))
-      return 'Science';
-    if([2, 6, 10].includes(playerPlace))
-      return 'Sports';
-
-    return 'Rock';
   }
 }
 
@@ -140,14 +142,9 @@ exports.Game = function(props) {
       inPenaltyBox[currentPlayer] = false;
     }
 
-    places[currentPlayer] = places[currentPlayer] + roll;
-    // TODO: extract this together with place logic?
-    if(places[currentPlayer] > 11){
-      places[currentPlayer] = places[currentPlayer] - 12;
-    }
-
+    places[currentPlayer] = Places.indexFromRoll({ roll, playerPlace: places[currentPlayer] })
     console.log(players[currentPlayer] + "'s new location is " + places[currentPlayer]);
-    console.log("The category is " + this.questionBank().category(places[currentPlayer]));
+    console.log("The category is " + Places.questionCategory(places[currentPlayer]));
     askQuestion();
 
     return true;
