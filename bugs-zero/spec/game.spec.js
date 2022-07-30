@@ -141,6 +141,18 @@ describe("roll", function() {
   });
 });
 
+describe("progressPlayer", () => {
+  var game;
+  beforeEach(() => {
+    game = new Game({ playerNames: ["bob", "alice"] });
+  });
+
+  it("changes currentPlayer", () => {
+    game.progressPlayer();
+    expect(game.currentPlayerState().player.name).toEqual("alice");
+  });
+});
+
 describe("wasCorrectlyAnswered", () => {
   describe("with player in penalty box but not getting out", () => {
     var game;
@@ -149,11 +161,6 @@ describe("wasCorrectlyAnswered", () => {
       game.wrongAnswer(); // this changes the currentPlayer from bob to alice
       game.wrongAnswer(); // this changes the currentPlayer from alice to bob
       expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(false);
-    });
-
-    it("changes currentPlayer", () => {
-      game.wasCorrectlyAnswered();
-      expect(game.currentPlayerState().player.name).toEqual("alice");
     });
 
     it("does not increase the player's purse", () => {
@@ -169,11 +176,6 @@ describe("wasCorrectlyAnswered", () => {
       game.wrongAnswer(); // this changes the currentPlayer from alice to bob
       game.roll(1);
       expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(true);
-    });
-
-    it("changes currentPlayer", () => {
-      game.wasCorrectlyAnswered();
-      expect(game.currentPlayerState().player.name).toEqual("alice");
     });
 
     it("increases the player's purse", () => {
@@ -202,11 +204,6 @@ describe("wasCorrectlyAnswered", () => {
     var game;
     beforeEach(() => {
       game = new Game({ playerNames: ["bob", "alice"] });
-    });
-
-    it("changes currentPlayer", () => {
-      game.wasCorrectlyAnswered();
-      expect(game.currentPlayerState().player.name).toEqual("alice");
     });
 
     it("increases the player's purse", () => {

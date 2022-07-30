@@ -111,6 +111,11 @@ exports.Game = function(props) {
     });
   };
 
+  this.progressPlayer = () => {
+    currentPlayer += 1;
+    if(currentPlayer == players.length) currentPlayer = 0;
+  };
+
   var askQuestion = function(){
     if(currentCategory() == 'Pop')
       console.log(popQuestions.shift());
@@ -158,22 +163,11 @@ exports.Game = function(props) {
                     purses[currentPlayer]  + " Gold Coins.");
 
         var winner = didPlayerWin();
-        currentPlayer += 1;
-        if(currentPlayer == players.length)
-          currentPlayer = 0;
-
         return winner;
       }else{
-        currentPlayer += 1;
-        if(currentPlayer == players.length)
-          currentPlayer = 0;
         return true;
       }
-
-
-
     }else{
-
       console.log("Answer was correct!!!!");
 
       purses[currentPlayer] += 1;
@@ -181,11 +175,6 @@ exports.Game = function(props) {
                   purses[currentPlayer]  + " Gold Coins.");
 
       var winner = didPlayerWin();
-
-      currentPlayer += 1;
-      if(currentPlayer == players.length)
-        currentPlayer = 0;
-
       return winner;
     }
   };
@@ -194,51 +183,22 @@ exports.Game = function(props) {
 		console.log('Question was incorrectly answered');
 		console.log(players[currentPlayer] + " was sent to the penalty box");
 		inPenaltyBox[currentPlayer] = true;
-
-    currentPlayer += 1;
-    if(currentPlayer == players.length)
-      currentPlayer = 0;
 		return true;
   };
 };
 
-// var notAWinner = false;
+var notAWinner = false;
 
-// var game = new Game();
+var game = new Game({ playerNames: ['Chet', 'Pat', 'Sue'] });
 
-// game.add('Chet');
-// game.add('Pat');
-// game.add('Sue');
-
-// do{
-
-//   game.roll(Math.floor(Math.random()*6) + 1); // 1 to 6
-
-//   if(Math.floor(Math.random()*10) == 7){
-//     notAWinner = game.wrongAnswer();
-//   }else{
-//     notAWinner = game.wasCorrectlyAnswered();
-//   }
-
-// }while(notAWinner);
-
-// // Problem 3 Suggestion: Extract the logic for whether a question can be answered
-// // to something like canAskQuestion.
-// var notAWinner = false;
-// const playerNames = ["Chet", "Pat", "Sue"];
-// var game = new Game({ playerNames });
-
-// do {
-//   const rollNumber = Math.floor(Math.random()*6) + 1; // 1 to 6
-//   game.roll(rollNumber);
-//   // con: a caller needs to know this sequence of events
-//   // perhaps a state machine to prevent bugs?
-//   if (game.askQuestion()) {
-//     if (Math.floor(Math.random()*10) == 7){
-//       game.wrongAnswer();
-//     } else {
-//       game.wasCorrectlyAnswered();
-//     }
-//     if (game.checkWinner()) break; // might be easy to infinite loop
-//   };
-// }while(true);
+do {
+  const canAnswerQuestion = game.roll(Math.floor(Math.random()*6) + 1); // 1 to 6
+  if (canAnswerQuestion) {
+    if (Math.floor(Math.random()*10) == 7){
+      notAWinner = game.wrongAnswer();
+    } else {
+      notAWinner = game.wasCorrectlyAnswered();
+    }
+  }
+  game.progressPlayer();
+} while(notAWinner);
