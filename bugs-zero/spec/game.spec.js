@@ -44,11 +44,17 @@ describe("roll", function() {
       expect(game.currentPlayerState().player.name).toEqual("bob");
     });
 
+    // TODO: remove after refactor
     it("cannot get out when rolling an even number", () => {
       game.roll(2);
       const currentPlayer = game.currentPlayerState().player;
       expect(currentPlayer.inPenaltyBox).toEqual(true);
       expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(false);
+    });
+
+    it("returns false when rolling an even number", () => {
+      const result = game.roll(2);
+      expect(result).toEqual(false);
     });
 
     it("does not askQuestion when rolling an even number", () => {
@@ -63,11 +69,17 @@ describe("roll", function() {
       expect(currentPlayer.place).toEqual(0);
     });
 
+    // TODO: remove after refactor
     it("can get out when rolling an odd number", () => {
       game.roll(1);
       const currentPlayer = game.currentPlayerState().player;
       expect(currentPlayer.inPenaltyBox).toEqual(true);
       expect(game.currentPlayerState().isGettingOutOfPenaltyBox).toEqual(true);
+    });
+
+    it("returns true when rolling an odd number", () => {
+      const result = game.roll(1);
+      expect(result).toEqual(true);
     });
 
     it("askQuestion when rolling an odd number", () => {
@@ -108,6 +120,11 @@ describe("roll", function() {
       expect(game.questionBank().totalRemaining).toEqual(199);
       game.roll(2);
       expect(game.questionBank().totalRemaining).toEqual(198);
+    });
+
+    it("returns true regardless of even or odd number", () => {
+      expect(game.roll(1)).toEqual(true);
+      expect(game.roll(2)).toEqual(true);
     });
 
     it("increments player place by the rolled number", () => {

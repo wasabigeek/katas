@@ -129,7 +129,7 @@ exports.Game = function(props) {
     if(inPenaltyBox[currentPlayer] && !isOdd(roll)) {
       console.log(players[currentPlayer] + " is not getting out of the penalty box");
       isGettingOutOfPenaltyBox = false;
-      return
+      return false;
     }
 
     if(inPenaltyBox[currentPlayer] && isOdd(roll)){
@@ -145,6 +145,8 @@ exports.Game = function(props) {
     console.log(players[currentPlayer] + "'s new location is " + places[currentPlayer]);
     console.log("The category is " + currentCategory());
     askQuestion();
+
+    return true;
   };
 
   this.wasCorrectlyAnswered = function(){
