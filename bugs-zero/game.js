@@ -9,6 +9,13 @@ class Player {
   }
 }
 
+class Places {
+  // encapsulate mapping of place to question category
+  questionCategory = ({ playerPlace }) => {}
+  // encapsulate how many places there are here
+  indexFromRoll = ({ roll }) => {}
+}
+
 class QuestionBank {
   constructor() {
     this.questionIndexes = {
