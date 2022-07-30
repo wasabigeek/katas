@@ -3,14 +3,16 @@ class Places {
 
   // encapsulate mapping of place to question category
   static questionCategory = ({ playerPlace }) => {
-    if ([0, 4, 8].includes(playerPlace))
-      return 'Pop';
-    if ([1, 5, 9].includes(playerPlace))
-      return 'Science';
-    if ([2, 6, 10].includes(playerPlace))
-      return 'Sports';
-
-    return 'Rock';
+    switch (playerPlace % 4) {
+      case 0:
+        return 'Pop';
+      case 1:
+        return 'Science';
+      case 2:
+        return 'Sports';
+      default:
+        return 'Rock';
+    }
   };
   // encapsulate how many places there are here
   static indexFromRoll = ({ roll, playerPlace }) => {
@@ -22,4 +24,5 @@ class Places {
     return newPlace;
   };
 }
+
 exports.Places = Places;

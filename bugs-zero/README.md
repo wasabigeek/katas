@@ -13,7 +13,7 @@ Pick any of the listed problems
 - A player that get’s into prison always stays there
 	- Other than just fixing the bug, try to understand what’s wrong with the design and fix the root cause
 - The deck could run out of questions
-- 	Make sure that can’t happen (a deck with 1 billion questions is cheating :)
+	- Make sure that can’t happen (a deck with 1 billion questions is cheating :)
 - Introducing new categories of questions seems like tricky business.
 	- Could you make sure all places have the “right” question and that the distribution is always correct?
 - Similarly changing the board size greatly affects the questions distribution
