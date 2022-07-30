@@ -11,32 +11,37 @@ class Player {
 
 class QuestionBank {
   constructor() {
-    this.popQuestions     = new Array();
-    this.scienceQuestions = new Array();
-    this.sportsQuestions  = new Array();
-    this.rockQuestions    = new Array();
-
-    for(var i = 0; i < 50; i++){
-      this.popQuestions.push("Pop Question "+i);
-      this.scienceQuestions.push("Science Question "+i);
-      this.sportsQuestions.push("Sports Question "+i);
-      this.rockQuestions.push("Rock Question "+i);
-    };
+    this.popQuestionsIndex     = 0;
+    this.scienceQuestionsIndex = 0;
+    this.sportsQuestionsIndex  = 0;
+    this.rockQuestionsIndex    = 0;
   }
 
   shift = ({ playerPlace }) => {
-    if(this.category(playerPlace) == 'Pop')
-      return this.popQuestions.shift();
-    if(this.category(playerPlace) == 'Science')
-      return this.scienceQuestions.shift();
-    if(this.category(playerPlace) == 'Sports')
-      return this.sportsQuestions.shift();
-    if(this.category(playerPlace) == 'Rock')
-      return this.rockQuestions.shift();
+    if(this.category(playerPlace) == 'Pop') {
+      const currentQuestion = `Pop Question ${this.popQuestionsIndex}`;
+      this.popQuestionsIndex += 1;
+      return currentQuestion;
+    }
+    if(this.category(playerPlace) == 'Science') {
+      const currentQuestion = `Science Question ${this.scienceQuestionsIndex}`;
+      this.scienceQuestionsIndex += 1;
+      return currentQuestion;
+    }
+    if(this.category(playerPlace) == 'Sports') {
+      const currentQuestion = `Sports Question ${this.sportsQuestionsIndex}`;
+      this.sportsQuestionsIndex += 1;
+      return currentQuestion;
+    }
+    if(this.category(playerPlace) == 'Rock') {
+      const currentQuestion = `Rock Question ${this.rockQuestionsIndex}`;
+      this.rockQuestionsIndex += 1;
+      return currentQuestion;
+    }
   }
 
   totalRemaining = () => {
-    return [this.popQuestions, this.scienceQuestions, this.sportsQuestions, this.rockQuestions].reduce((accum, current) => { return accum + current.length }, 0);
+    return [this.popQuestionsIndex, this.scienceQuestionsIndex, this.sportsQuestionsIndex, this.rockQuestionsIndex].reduce((accum, current) => { return accum + 50 - current }, 0);
   }
 
   category = (playerPlace) => {
