@@ -63,9 +63,8 @@ exports.Game = function(props) {
     }
   }
 
-  // confusing variable and function naming, should be the opposite >_<
-  var didPlayerWin = function(){
-    return !(purses[currentPlayer] == amountToWin)
+  this.didPlayerWin = function(){
+    return (purses[currentPlayer] == amountToWin)
   };
 
   var currentCategory = function(){
@@ -162,20 +161,14 @@ exports.Game = function(props) {
     purses[currentPlayer] += 1;
     console.log(players[currentPlayer] + " now has " +
                 purses[currentPlayer]  + " Gold Coins.");
-
-    var winner = didPlayerWin();
-    return winner;
   };
 
   this.wrongAnswer = function(){
 		console.log('Question was incorrectly answered');
 		console.log(players[currentPlayer] + " was sent to the penalty box");
 		inPenaltyBox[currentPlayer] = true;
-		return true;
   };
 };
-
-var notAWinner = false;
 
 var game = new Game({ playerNames: ['Chet', 'Pat', 'Sue'] });
 
@@ -184,10 +177,12 @@ do {
   const canAnswerQuestion = game.roll(Math.floor(Math.random()*6) + 1); // 1 to 6
   if (canAnswerQuestion) {
     if (Math.floor(Math.random()*10) == 7){
-      notAWinner = game.wrongAnswer();
+      game.wrongAnswer();
     } else {
-      notAWinner = game.wasCorrectlyAnswered();
+      game.wasCorrectlyAnswered();
     }
   }
+  if (game.didPlayerWin()) break;
+
   game.progressPlayer();
-} while(notAWinner);
+} while(true); // is there a way to make this less risky?

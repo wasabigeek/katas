@@ -161,11 +161,6 @@ describe("wasCorrectlyAnswered", () => {
       game.wasCorrectlyAnswered();
       expect(game.getPlayers()[0].purse).toEqual(0);
     });
-
-    it("returns true if player does not win", () => {
-      const result = game.wasCorrectlyAnswered();
-      expect(result).toEqual(true);
-    });
   });
   describe("with player not in penalty box", () => {
     var game;
@@ -177,21 +172,18 @@ describe("wasCorrectlyAnswered", () => {
       game.wasCorrectlyAnswered();
       expect(game.getPlayers()[0].purse).toEqual(1);
     });
+  });
+});
 
-    it("returns true if player does not win", () => {
-      const result = game.wasCorrectlyAnswered();
-      expect(result).toEqual(true);
-    });
+describe("didPlayerWin", () => {
+  it("returns false if current player does not have enough coins", () => {
+    game = new Game({ playerNames: ["bob", "alice"], amountToWin: 1 });
+    expect(game.didPlayerWin()).toEqual(false);
+  });
 
-    it("returns false if player wins", () => {
-      // TODO: redesign such that it's easier to compose a game state
-      game = new Game({ playerNames: ["bob", "alice"], amountToWin: 1 });
-      game.wrongAnswer(); // this changes the currentPlayer from bob to alice
-      game.wrongAnswer(); // this changes the currentPlayer from alice to bob
-      game.roll(1);
-
-      const result = game.wasCorrectlyAnswered();
-      expect(result).toEqual(false);
-    });
+  it("returns true if current player has enough coins", () => {
+    game = new Game({ playerNames: ["bob", "alice"], amountToWin: 1 });
+    game.wasCorrectlyAnswered();
+    expect(game.didPlayerWin()).toEqual(true);
   });
 });
