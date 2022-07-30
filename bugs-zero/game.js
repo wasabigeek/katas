@@ -33,6 +33,9 @@ class QuestionBank {
       .reduce((accum, current) => { return accum + 50 - this.questionIndexes[current] }, 0);
   }
 
+  // At first I thought I could make this a part of a "category config", but that might make it easy to make a mistake (no checks to ensure one place == 1 config only etc.). Also, now the place logic is coupled to Game and QuestionBank.
+
+  // Possibility: QuestionBank is a dumb counter that takes whatever category is provided, counts and spits out the question. This works for the current requirements, but doesn't feel like it would work in the future. YAGNI I guess.
   category = (playerPlace) => {
     if([0, 4, 8].includes(playerPlace))
       return 'Pop';
@@ -132,6 +135,7 @@ exports.Game = function(props) {
     }
 
     places[currentPlayer] = places[currentPlayer] + roll;
+    // TODO: extract this together with place logic?
     if(places[currentPlayer] > 11){
       places[currentPlayer] = places[currentPlayer] - 12;
     }
